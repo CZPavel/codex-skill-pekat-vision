@@ -19,7 +19,7 @@ python -m pytest -q
 Use the built-in `skill-installer` script:
 
 ```powershell
-python C:\Users\P.J\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py --repo CZPavel/codex-skill-pekat-vision --path .
+python C:\Users\P.J\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py --repo CZPavel/codex-skill-pekat-vision --path . --name pekat-vision
 ```
 
 If `pekat-vision` already exists in `~/.codex/skills`, remove or rename it before reinstalling.
