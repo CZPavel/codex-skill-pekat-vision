@@ -1,4 +1,0 @@
-interface:
-  display_name: "ThingWorx FIOT Connectivity"
-  short_description: "Integrace FIOT, ThingWorx a Kepware"
-  default_prompt: "Use $thingworx-fiot-connectivity to scaffold a secure appKey-based FIOT/ThingWorx bridge with docs and healthcheck."

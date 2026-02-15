@@ -1,6 +1,6 @@
 ---
 name: pekat-vision
-description: Integrace a skriptovani pro PEKAT Vision. Pouzij pri ukolech s Code modulem, praci s context objektem, REST API analyzou obrazu, SDK klientem, Projects Manager ovladanim projektu, nebo nasazenim externich Python knihoven do PEKAT serveru.
+description: Integrace a skriptovani pro PEKAT Vision (Code module, REST API, SDK, Projects Manager, externi Python knihovny). Pouzij pri implementaci nebo debugovani PEKAT workflow; nepouzivej pro cisty frontend nebo neodsouhlasene produkcni zasahy.
 ---
 
 # Quick workflow
@@ -78,3 +78,4 @@ Viz `scripts/rest_api_client_demo.py`.
 - `docs/USER_GUIDE.md`: prakticky postup pro vlozeni a ladeni Code skriptu.
 - `scripts/`: sablony a demo klienti.
 - `tests/`: smoke testy pro rychlou verifikaci.
+

@@ -1,25 +1,33 @@
-﻿# PEKAT Vision Codex Skill
+﻿# Codex Skill: PEKAT Vision
 
-Custom skill for Codex focused on PEKAT Vision integration (Code module, REST API, SDK, and Projects Manager workflows).
+Samostatny repozitar pro skill `pekat-vision`.
+Repo je zamereny na integraci PEKAT Vision (Code module, REST API, SDK, Projects Manager) a je pripraveny pro samostatnou instalaci pres Skill Installer.
 
-## Repository Layout
-- `SKILL.md`
-- `agents/openai.yaml`
-- `docs/`
+## Kdy pouzit
+- Potrebujete navrhnout nebo upravit PEKAT Code module script.
+- Potrebujete REST klienta pro analyze image/raw image endpointy.
+- Potrebujete napojit Projects Manager nebo pridat externi Python knihovnu do PEKAT serveru.
+
+## Kdy nepouzit
+- Ciste frontend/UI bez integrace na PEKAT.
+- Neodsouhlasene produkcni zasahy do serveru, uzivatelu, klicu nebo site.
+
+## Struktura
+- `.github/skills/pekat-vision/SKILL.md`
+- `.github/skills/pekat-vision/agents/openai.yaml`
 - `scripts/`
 - `tests/`
+- `docs/`
+- `project_context.md`
+- `CHANGELOG.md`
 
-## Local Validation
+## Instalace skillu
 ```powershell
-cd C:\Users\P.J\.codex\skills\pekat-vision
-python -m pytest -q
+python C:\Users\P.J\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py --repo CZPavel/codex-skill-pekat-vision --path .github/skills/pekat-vision --name pekat-vision
 ```
 
-## Install into Codex from GitHub
-Use the built-in `skill-installer` script:
-
+## Validace
 ```powershell
-python C:\Users\P.J\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py --repo CZPavel/codex-skill-pekat-vision --path . --name pekat-vision
+python C:\Users\P.J\.codex\skills\.system\skill-creator\scripts\quick_validate.py .github/skills/pekat-vision
+python -m pytest -q tests/test_code_module_smoke.py tests/test_rest_api_client_demo.py
 ```
-
-If `pekat-vision` already exists in `~/.codex/skills`, remove or rename it before reinstalling.
