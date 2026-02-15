@@ -1,0 +1,4 @@
+interface:
+  display_name: "Industrial IMS Integration"
+  short_description: "Integrace Kepware/FIOT/PEKAT s IBM IMS PSB a API"
+  default_prompt: "Use $industrial-ims-integration to design and scaffold a secure OT to IBM IMS integration workflow."
