@@ -1,0 +1,6 @@
+interface:
+  display_name: "PEKAT Vision"
+  short_description: "Skripty a integrace pro PEKAT Vision (Code modul, REST API, Projects Manager TCP/Web)."
+  default_prompt: "Pouzij $pekat-vision pro navrh a implementaci integrace PEKAT Vision (Code modul, REST API nebo Projects Manager) vcetne testu."
+policy:
+  allow_implicit_invocation: true
