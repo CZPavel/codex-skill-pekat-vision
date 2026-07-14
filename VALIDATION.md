@@ -39,7 +39,7 @@ python .github/skills/pekat-vision/scripts/runtime_fingerprint.py
 - [x] No root-level copies of domain scripts or references remain.
 - [x] The skill tree contains no raw PDF, Confluence body, cache, venv, credential, private endpoint, or real project data.
 - [x] Network and device tests are mocked and perform no writes.
-- [ ] GitHub Actions passes on the release PR for Python 3.11 and 3.13.
+- [x] GitHub Actions passes on the release PR for Python 3.11 and 3.13.
 - [x] The release branch installs and validates through Skill Installer; all 17 canonical files match the published commit's Git blob IDs.
 - [ ] Tag `v2.0.0` installs, validates, and matches the release ZIP hashes.
 
