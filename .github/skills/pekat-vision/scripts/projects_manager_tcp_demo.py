@@ -1,28 +1,39 @@
-"""Demo client for Projects Manager Simple TCP server.
-
-Common command patterns:
-- start:<project_path>  -> done | error:port | not-found
-- stop:<project_path>   -> done
-- status:<project_path> -> stopped|stopping|starting|running
-- switch:<project_path> -> success
-"""
+"""Projects Manager Simple TCP helper with read-only defaults."""
+from __future__ import annotations
 
 import socket
 
+READ_ONLY_COMMANDS = {"status"}
+MUTATING_COMMANDS = {"start", "stop", "switch"}
 
-def send_cmd(host: str, port: int, cmd: str, recv_bytes: int = 64, timeout_s: float = 3.0) -> str:
-    with socket.create_connection((host, port), timeout=timeout_s) as sock:
+
+def build_command(action: str, project_path: str) -> str:
+    action = action.strip().lower()
+    if action not in READ_ONLY_COMMANDS | MUTATING_COMMANDS:
+        raise ValueError(f"unsupported action: {action}")
+    if not project_path.strip() or "\n" in project_path or "\r" in project_path:
+        raise ValueError("project_path must be a non-empty single line")
+    return f"{action}:{project_path}"
+
+
+def send_command(
+    host: str,
+    port: int,
+    action: str,
+    project_path: str,
+    *,
+    allow_mutation: bool = False,
+    timeout_s: float = 3.0,
+    recv_bytes: int = 256,
+) -> str:
+    action = action.strip().lower()
+    if action in MUTATING_COMMANDS and not allow_mutation:
+        raise PermissionError(f"{action} requires allow_mutation=True and explicit operator approval")
+    command = build_command(action, project_path)
+    with socket.create_connection((host, int(port)), timeout=timeout_s) as sock:
         sock.settimeout(timeout_s)
-        sock.sendall(cmd.encode("utf-8"))
+        sock.sendall(command.encode("utf-8"))
         response = sock.recv(recv_bytes)
-        return response.decode("utf-8", errors="replace").strip()
-
-
-if __name__ == "__main__":
-    HOST = "127.0.0.1"
-    PORT = 7002  # nastav podle Projects Manager settings
-    PROJECT_PATH = r"C:\Users\pekat\PekatVisionProjects\Test Project 1"
-
-    print("Status:", send_cmd(HOST, PORT, f"status:{PROJECT_PATH}"))
-    # print("Start :", send_cmd(HOST, PORT, f"start:{PROJECT_PATH}"))
-    # print("Stop  :", send_cmd(HOST, PORT, f"stop:{PROJECT_PATH}"))
+    if not response:
+        raise RuntimeError("Projects Manager returned an empty response")
+    return response.decode("utf-8", errors="strict").strip()

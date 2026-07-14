@@ -1,0 +1,38 @@
+name: validate-skill
+
+on:
+  push:
+    branches: [main, "release/**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out pinned OpenAI skill validator
+        uses: actions/checkout@v4
+        with:
+          repository: openai/skills
+          ref: 49f948faa9258a0c61caceaf225e179651397431
+          path: .cache/openai-skills
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Validate skill metadata
+        run: python .cache/openai-skills/skills/.system/skill-creator/scripts/quick_validate.py .github/skills/pekat-vision
+      - name: Run unit, mock, fixture, and security tests
+        run: python -m pytest -q
+      - name: Ensure generated Python parses
+        run: python -m compileall -q .github/skills/pekat-vision/scripts

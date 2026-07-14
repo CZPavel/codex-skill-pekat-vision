@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "form": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "defaultValue": {},
+          "formKey": {
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+            "type": "string"
+          },
+          "label": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "max": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "min": {
+            "type": [
+              "string",
+              "number"
+            ]
+          },
+          "options": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "checkbox",
+              "number",
+              "select",
+              "text"
+            ]
+          },
+          "visibility": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "formKey",
+          "label",
+          "defaultValue"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "form_values": {
+      "type": "object"
+    },
+    "is_active": {
+      "default": true,
+      "type": "boolean"
+    },
+    "label": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "module_id": {
+      "type": "integer"
+    },
+    "note": {
+      "type": "string"
+    },
+    "show_image_preview": {
+      "default": true,
+      "type": "boolean"
+    },
+    "source_code": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "target_version": {
+      "enum": [
+        "3.19.3",
+        "4.0.1"
+      ]
+    }
+  },
+  "required": [
+    "target_version",
+    "label",
+    "source_code"
+  ],
+  "title": "PEKAT Code ModuleSpec",
+  "type": "object"
+}
