@@ -41,9 +41,15 @@ python .github/skills/pekat-vision/scripts/runtime_fingerprint.py
 - [x] Network and device tests are mocked and perform no writes.
 - [x] GitHub Actions passes on the release PR for Python 3.11 and 3.13.
 - [x] The release branch installs and validates through Skill Installer; all 17 canonical files match the published commit's Git blob IDs.
-- [ ] Tag `v2.0.0` installs, validates, and matches the release ZIP hashes.
+- [x] Tag `v2.0.0` installs, validates, and matches all 17 files in the release ZIP.
 
-The remaining gates are performed from published GitHub objects. A failure blocks merge, release, and local replacement.
+Published release evidence:
+
+- Tag target: `adefc300218e4652f1ed82930bff648ceff3e91f`
+- Release ZIP SHA256: `32bf7982e9559200a6da9a6a35351f2b64844503269fa4c9ef4b8bbc481fe39f`
+- Release: <https://github.com/CZPavel/codex-skill-pekat-vision/releases/tag/v2.0.0>
+
+All publication gates passed. The locally installed skill was validated after replacement; its 17 file hashes match the release archive.
 
 ## Manual acceptance boundary
 
