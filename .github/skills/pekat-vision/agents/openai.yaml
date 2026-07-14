@@ -1,6 +1,4 @@
 interface:
-  display_name: "PEKAT Vision"
-  short_description: "Skripty a integrace pro PEKAT Vision (Code modul, REST API, Projects Manager TCP/Web)."
-  default_prompt: "Pouzij $pekat-vision pro navrh a implementaci integrace PEKAT Vision (Code modul, REST API nebo Projects Manager) vcetne testu."
-policy:
-  allow_implicit_invocation: true
+  display_name: "PEKAT VISION 3.19/4.0"
+  short_description: "Version-aware PEKAT Code, forms, REST, and industrial I/O."
+  default_prompt: "Use $pekat-vision to build or debug a version-correct PEKAT VISION workflow, including a safe importable Code module when requested."

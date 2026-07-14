@@ -1,110 +1,64 @@
-"""PEKAT Vision – Code module template (KB 3.19)
+"""Version-aware PEKAT Code module template with Form Editor values.
 
-✅ Záměr: šablona, která je robustní proti KeyError/IndexError a drží typy v contextu.
-✅ Entry point: main(context, module_item=None)
-✅ module_item: slovník hodnot z Form Editoru (může být None)
-
-Pozn.: V PEKATu se `context['image']` typicky předává jako numpy array.
+The template intentionally does not persist process-global state or mutate result.
 """
+from __future__ import annotations
 
-import __main__  # dovoluje držet stav napříč snímky
-from typing import Any, Dict, Optional, Tuple
-
-import numpy as np
-import cv2
+from typing import Any
 
 
-# ------------------------- Globální stav (per instance) -------------------------
-
-def _init_globals() -> None:
-    """Inicializace globálních proměnných – bezpečné pro opakované volání."""
-    if "frame_counter" not in dir(__main__):
-        __main__.frame_counter = 0
-
-
-# ------------------------- Utility -------------------------
-
-def _safe_get_image(context: Dict[str, Any]) -> Optional[np.ndarray]:
-    img = context.get("image", None)
-    if isinstance(img, np.ndarray):
-        return img
+def _first_rectangle(context: dict[str, Any], target_label: str | None) -> dict[str, Any] | None:
+    rectangles = context.get("detectedRectangles", [])
+    if not isinstance(rectangles, list):
+        return None
+    for rectangle in rectangles:
+        if not isinstance(rectangle, dict):
+            continue
+        labels = rectangle.get("classNames", [])
+        label = None
+        if isinstance(labels, list) and labels and isinstance(labels[0], dict):
+            label = labels[0].get("label")
+        label = label or rectangle.get("label") or rectangle.get("className")
+        if target_label in {None, ""} or label == target_label:
+            return rectangle
     return None
 
 
-def _iter_rectangles(context: Dict[str, Any]):
-    rects = context.get("detectedRectangles", [])
-    if isinstance(rects, list):
-        for r in rects:
-            if isinstance(r, dict):
-                yield r
+def _crop(image: Any, rectangle: dict[str, Any]) -> Any | None:
+    """Crop an array-like image while preserving its dtype through slicing/copy."""
+    shape = getattr(image, "shape", None)
+    if not shape or len(shape) < 2:
+        return None
+    height, width = int(shape[0]), int(shape[1])
+    try:
+        x = int(rectangle.get("x", 0))
+        y = int(rectangle.get("y", 0))
+        rect_width = int(rectangle.get("width", 0))
+        rect_height = int(rectangle.get("height", 0))
+    except (TypeError, ValueError):
+        return None
+    x1, y1 = max(0, min(width, x)), max(0, min(height, y))
+    x2, y2 = max(0, min(width, x + rect_width)), max(0, min(height, y + rect_height))
+    if x2 <= x1 or y2 <= y1:
+        return None
+    cropped = image[y1:y2, x1:x2]
+    return cropped.copy() if hasattr(cropped, "copy") else cropped
 
 
-def _rect_label(rect: Dict[str, Any]) -> Optional[str]:
-    """Preferuj top label z classNames[0]['label'] – dle KB příkladů."""
-    class_names = rect.get("classNames")
-    if isinstance(class_names, list) and class_names:
-        top = class_names[0]
-        if isinstance(top, dict):
-            return top.get("label")
-    return rect.get("label") or rect.get("className")
+def main(context: dict[str, Any], form: dict[str, Any] | None = None) -> None:
+    """Optionally crop the image and write diagnostics without changing result."""
+    values = form or {}
+    target_label = values.get("target_label")
+    crop_enabled = bool(values.get("crop_enabled", False))
 
-
-def _clip_roi(x1: int, y1: int, x2: int, y2: int, w: int, h: int) -> Tuple[int, int, int, int]:
-    x1 = max(0, min(w, x1))
-    x2 = max(0, min(w, x2))
-    y1 = max(0, min(h, y1))
-    y2 = max(0, min(h, y2))
-    if x2 < x1:
-        x1, x2 = x2, x1
-    if y2 < y1:
-        y1, y2 = y2, y1
-    return x1, y1, x2, y2
-
-
-# ------------------------- Entry point -------------------------
-
-def main(context: Dict[str, Any], module_item: Optional[Dict[str, Any]] = None) -> None:
-    _init_globals()
-    __main__.frame_counter += 1
-
-    # ---- Program settings (upravuje uživatel) ----
-    TARGET_LABEL = "My Rectangle"     # label, podle kterého se bude ořezávat (nebo None pro první rectangle)
-    DO_EARLY_EXIT_IF_MISSING = False  # pokud True a rectangle chybí → nastaví context['exit']=True
-    DRAW_DEBUG = False                # pokud True, vykreslí rectangle do obrázku
-    # ---------------------------------------------
-
-    img = _safe_get_image(context)
-    if img is None:
+    rectangle = _first_rectangle(context, None if target_label is None else str(target_label))
+    context["code_template_status"] = "rectangle_not_found" if rectangle is None else "rectangle_found"
+    if not crop_enabled or rectangle is None:
         return
 
-    # Najdi rectangle pro ořez
-    selected = None
-    for r in _iter_rectangles(context):
-        if TARGET_LABEL is None or _rect_label(r) == TARGET_LABEL:
-            selected = r
-            break
-
-    if selected is None:
-        if DO_EARLY_EXIT_IF_MISSING:
-            context["exit"] = True  # skip dalších modulů ve větvi
+    cropped = _crop(context.get("image"), rectangle)
+    if cropped is None:
+        context["code_template_status"] = "invalid_image_or_roi"
         return
-
-    x = int(selected.get("x", 0))
-    y = int(selected.get("y", 0))
-    w = int(selected.get("width", 0))
-    h = int(selected.get("height", 0))
-
-    H, W = img.shape[:2]
-    x1, y1, x2, y2 = _clip_roi(x, y, x + w, y + h, W, H)
-
-    # Ořez – zachová typ (np.ndarray)
-    cropped = img[y1:y2, x1:x2].copy()
     context["image"] = cropped
-
-    if DRAW_DEBUG:
-        # Pozn.: kreslíme do cropped, takže rectangle bude typicky na hraně obrazu
-        cv2.rectangle(context["image"], (0, 0), (cropped.shape[1] - 1, cropped.shape[0] - 1), (0, 255, 0), 2)
-
-    # Ukázka: práce s module_item (Form Editor)
-    if isinstance(module_item, dict):
-        context["debug_form_keys"] = list(module_item.keys())
+    context["code_template_status"] = "cropped"

@@ -1,17 +1,29 @@
-﻿# AGENTS Instructions
+# AGENTS Instructions
 
-## Lokalne kontroly
+## Canonical source
+
+- Edit only `.github/skills/pekat-vision` for installed skill behavior/resources.
+- Do not recreate root-level script/reference mirrors.
+- Never include credentials, private endpoints, raw proprietary documents, venv/cache files, or Codex state.
+
+## Local validation
+
 ```powershell
-python C:\Users\P.J\.codex\skills\.system\skill-creator\scripts\quick_validate.py .github/skills/pekat-vision
-python -m pytest -q tests/test_code_module_smoke.py tests/test_rest_api_client_demo.py
+$Validator = Join-Path $env:USERPROFILE ".codex\skills\.system\skill-creator\scripts\quick_validate.py"
+python $Validator .github/skills/pekat-vision
+python -m pytest -q
 ```
 
-## Instalacni test (izolovane)
+## Isolated installer test
+
 ```powershell
-python C:\Users\P.J\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py --repo CZPavel/codex-skill-pekat-vision --path .github/skills/pekat-vision --dest C:\PYTHON_test\_skill_split_work\install_test\skills
+$Installer = Join-Path $env:USERPROFILE ".codex\skills\.system\skill-installer\scripts\install-skill-from-github.py"
+python $Installer --repo CZPavel/codex-skill-pekat-vision --ref <branch-or-tag> --path .github/skills/pekat-vision --dest <empty-test-directory>
 ```
 
-## Publikace
-- Nepouzivat force push.
-- Pred pushem aktualizovat `CHANGELOG.md` a `VALIDATION.md`.
-- Overit, ze `SKILL.md` obsahuje `name` a `description`.
+## Publication
+
+- Do not force-push.
+- Update root `CHANGELOG.md` and `VALIDATION.md` before push.
+- Require local validation and green GitHub Actions before merge/tag/release.
+- Keep PEKAT UI round-trip explicitly manual and isolated.

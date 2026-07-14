@@ -1,38 +1,29 @@
-"""Smoke test pro šablonu Code modulu.
-
-Spustitelné mimo PEKAT:
-python -m tests.test_code_module_smoke
-
-Cíl: odhalit syntaktické chyby a nejčastější KeyError/IndexError.
-"""
-
-import numpy as np
-
-from scripts.code_module_template import main
+from code_module_template import main
 
 
-def test_template_runs_without_errors():
-    # Minimal context podobný tomu, co ukazuje KB 3.19
-    context = {
-        "image": np.zeros((100, 100, 3), dtype=np.uint8),
-        "detectedRectangles": [
-            {
-                "x": 10,
-                "y": 10,
-                "width": 50,
-                "height": 40,
-                "classNames": [{"label": "My Rectangle"}],
-            }
-        ],
-        "result": True,
-    }
+class FakeImage:
+    shape = (100, 120, 3)
 
-    main(context, module_item={"dummy": 1})
+    def __getitem__(self, _key):
+        return self
 
-    assert isinstance(context["image"], np.ndarray)
-    assert context["image"].shape[0] > 0 and context["image"].shape[1] > 0
+    def copy(self):
+        return FakeImage()
 
 
-if __name__ == "__main__":
-    test_template_runs_without_errors()
-    print("OK")
+def rectangle(label="part"):
+    return {"x": 10, "y": 20, "width": 30, "height": 40, "classNames": [{"label": label}]}
+
+
+def test_form_entrypoint_crops_without_changing_result():
+    context = {"image": FakeImage(), "detectedRectangles": [rectangle()], "result": True}
+    main(context, {"target_label": "part", "crop_enabled": True})
+    assert isinstance(context["image"], FakeImage)
+    assert context["code_template_status"] == "cropped"
+    assert context["result"] is True
+
+
+def test_missing_inputs_are_diagnostic_only():
+    context = {"result": False}
+    main(context)
+    assert context == {"result": False, "code_template_status": "rectangle_not_found"}

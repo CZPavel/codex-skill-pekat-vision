@@ -1,35 +1,25 @@
-"""Demo client for PEKAT Vision REST API.
-
-Supported endpoints:
-- POST /analyze_image
-- POST /analyze_raw_image
-- GET /ping
-- GET /stop
-- GET /last_image
-
-This module follows response handling used by current `pekat-vision-sdk`.
-"""
-
+"""Safe, testable PEKAT REST helpers for PNG and raw image analysis."""
 from __future__ import annotations
 
 import base64
 import json
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, Dict, Optional
-from urllib.parse import quote_plus
+from typing import Any
+from urllib.parse import urlencode
 
-import numpy as np
 import requests
-
 
 ALLOWED_RESPONSE_TYPES = {"context", "image", "annotated_image", "heatmap"}
 
 
-@dataclass
+class PekatRestError(RuntimeError):
+    """Normalized REST transport or payload error."""
+
+
+@dataclass(slots=True)
 class Result:
-    image_bytes: Optional[bytes]
-    context: Dict[str, Any]
+    image_bytes: bytes | None
+    context: dict[str, Any]
 
 
 def _build_url(
@@ -38,189 +28,116 @@ def _build_url(
     endpoint: str,
     response_type: str = "context",
     *,
-    data: Optional[str] = None,
+    data: str | None = None,
     context_in_body: bool = False,
-    extra_query: Optional[Dict[str, Any]] = None,
+    extra_query: dict[str, Any] | None = None,
 ) -> str:
     if response_type not in ALLOWED_RESPONSE_TYPES:
-        raise ValueError(f"Unsupported response_type: {response_type}")
-
-    query_parts = [f"response_type={quote_plus(response_type)}"]
-
+        raise ValueError(f"unsupported response_type: {response_type}")
+    query: dict[str, Any] = {"response_type": response_type}
     if data is not None:
-        query_parts.append(f"data={quote_plus(data)}")
-
+        query["data"] = data
+    if context_in_body:
+        query["context_in_body"] = "true"
     if extra_query:
-        for key, value in extra_query.items():
-            query_parts.append(f"{quote_plus(str(key))}={quote_plus(str(value))}")
-
-    if context_in_body:
-        # PEKAT accepts this as a query flag without explicit value.
-        query_parts.append("context_in_body")
-
-    return f"http://{host}:{port}/{endpoint}?{'&'.join(query_parts)}"
+        query.update(extra_query)
+    return f"http://{host}:{int(port)}/{endpoint}?{urlencode(query)}"
 
 
-def parse_response(response: requests.Response, response_type: str, context_in_body: bool) -> Result:
-    """Parse PEKAT response for both context transport modes."""
+def _dict_json(response: Any) -> dict[str, Any]:
+    try:
+        payload = response.json()
+    except (ValueError, json.JSONDecodeError) as exc:
+        raise PekatRestError("PEKAT returned invalid JSON") from exc
+    if not isinstance(payload, dict):
+        raise PekatRestError("PEKAT returned an unexpected JSON shape")
+    return payload
+
+
+def parse_response(response: Any, response_type: str, context_in_body: bool) -> Result:
     if response_type == "context":
-        return Result(None, response.json())
-
+        return Result(None, _dict_json(response))
     if context_in_body:
-        image_len_str = response.headers.get("ImageLen")
-        if not image_len_str:
-            return Result(None, response.json())
+        raw_length = response.headers.get("ImageLen")
+        if raw_length is None:
+            return Result(None, _dict_json(response))
+        try:
+            image_length = int(raw_length)
+        except (TypeError, ValueError) as exc:
+            raise PekatRestError("invalid ImageLen response header") from exc
+        if image_length < 0 or image_length > len(response.content):
+            raise PekatRestError("ImageLen exceeds response body")
+        try:
+            context = json.loads(response.content[image_length:].decode("utf-8"))
+        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+            raise PekatRestError("invalid context in response body") from exc
+        if not isinstance(context, dict):
+            raise PekatRestError("unexpected context shape")
+        return Result(response.content[:image_length], context)
+    encoded = response.headers.get("ContextBase64utf")
+    if encoded is None:
+        return Result(None, _dict_json(response))
+    try:
+        context = json.loads(base64.b64decode(encoded, validate=True).decode("utf-8"))
+    except (ValueError, UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise PekatRestError("invalid ContextBase64utf response header") from exc
+    if not isinstance(context, dict):
+        raise PekatRestError("unexpected context shape")
+    return Result(response.content, context)
 
-        image_len = int(image_len_str)
-        image_bytes = response.content[:image_len]
-        context_json = response.content[image_len:].decode("utf-8")
-        return Result(image_bytes, json.loads(context_json))
 
-    image_bytes = response.content
-    context_base64 = response.headers.get("ContextBase64utf")
-    if context_base64 is None:
-        return Result(None, response.json())
+def _post(url: str, body: bytes, response_type: str, context_in_body: bool, timeout: tuple[float, float], session: Any) -> Result:
+    try:
+        response = session.post(
+            url,
+            data=body,
+            headers={"Content-Type": "application/octet-stream"},
+            timeout=timeout,
+        )
+        response.raise_for_status()
+        return parse_response(response, response_type, context_in_body)
+    except requests.Timeout as exc:
+        raise PekatRestError("PEKAT request timed out") from exc
+    except requests.HTTPError as exc:
+        status = exc.response.status_code if exc.response is not None else "unknown"
+        raise PekatRestError(f"PEKAT HTTP error: {status}") from exc
+    except requests.RequestException as exc:
+        raise PekatRestError("PEKAT is unavailable") from exc
 
-    context_json = base64.b64decode(context_base64)
-    return Result(image_bytes, json.loads(context_json))
+
+def analyze_png(
+    png_bytes: bytes,
+    *,
+    host: str = "localhost",
+    port: int = 8080,
+    response_type: str = "context",
+    data: str | None = None,
+    context_in_body: bool = False,
+    timeout: tuple[float, float] = (3.0, 20.0),
+    session: Any = requests,
+) -> Result:
+    if not isinstance(png_bytes, bytes) or not png_bytes.startswith(b"\x89PNG\r\n\x1a\n"):
+        raise ValueError("png_bytes must contain a binary PNG")
+    url = _build_url(host, port, "analyze_image", response_type, data=data, context_in_body=context_in_body)
+    return _post(url, png_bytes, response_type, context_in_body, timeout, session)
 
 
-def analyze_image_bytes(
-    host: str,
-    port: int,
+def analyze_raw(
     image_bytes: bytes,
     *,
+    height: int,
+    width: int,
+    host: str = "localhost",
+    port: int = 8080,
     response_type: str = "context",
-    data: Optional[str] = None,
-    context_in_body: bool = False,
-    timeout_s: float = 5.0,
+    bayer: str | None = None,
+    timeout: tuple[float, float] = (3.0, 20.0),
+    session: Any = requests,
 ) -> Result:
-    url = _build_url(
-        host,
-        port,
-        "analyze_image",
-        response_type,
-        data=data,
-        context_in_body=context_in_body,
-    )
-    response = requests.post(
-        url,
-        data=image_bytes,
-        headers={"Content-Type": "application/octet-stream"},
-        timeout=timeout_s,
-    )
-    response.raise_for_status()
-    return parse_response(response, response_type, context_in_body)
-
-
-def analyze_image_png_path(
-    host: str,
-    port: int,
-    png_path: str,
-    *,
-    response_type: str = "context",
-    data: Optional[str] = None,
-    context_in_body: bool = False,
-    timeout_s: float = 5.0,
-) -> Result:
-    image_bytes = Path(png_path).read_bytes()
-    return analyze_image_bytes(
-        host,
-        port,
-        image_bytes,
-        response_type=response_type,
-        data=data,
-        context_in_body=context_in_body,
-        timeout_s=timeout_s,
-    )
-
-
-def analyze_raw_numpy(
-    host: str,
-    port: int,
-    image: np.ndarray,
-    *,
-    response_type: str = "context",
-    data: Optional[str] = None,
-    context_in_body: bool = False,
-    bayer: Optional[str] = None,
-    timeout_s: float = 5.0,
-) -> Result:
-    height, width = image.shape[:2]
-    extra_query: Dict[str, Any] = {"height": height, "width": width}
-    if bayer is not None:
-        extra_query["bayer"] = bayer
-
-    url = _build_url(
-        host,
-        port,
-        "analyze_raw_image",
-        response_type,
-        data=data,
-        context_in_body=context_in_body,
-        extra_query=extra_query,
-    )
-    response = requests.post(
-        url,
-        data=image.tobytes(),
-        headers={"Content-Type": "application/octet-stream"},
-        timeout=timeout_s,
-    )
-    response.raise_for_status()
-    return parse_response(response, response_type, context_in_body)
-
-
-def last_image(
-    host: str,
-    port: int,
-    *,
-    response_type: str = "image",
-    context_in_body: bool = False,
-    timeout_s: float = 5.0,
-) -> Result:
-    url = _build_url(
-        host,
-        port,
-        "last_image",
-        response_type,
-        context_in_body=context_in_body,
-    )
-    response = requests.get(url, timeout=timeout_s)
-    response.raise_for_status()
-    return parse_response(response, response_type, context_in_body)
-
-
-def ping(host: str, port: int, timeout_s: float = 5.0) -> bool:
-    try:
-        requests.get(f"http://{host}:{port}/ping", timeout=timeout_s).raise_for_status()
-        return True
-    except requests.exceptions.RequestException:
-        return False
-
-
-def stop(host: str, port: int, key: Optional[str] = None, timeout_s: float = 5.0) -> requests.Response:
-    url = f"http://{host}:{port}/stop"
-    if key:
-        url = f"{url}?key={quote_plus(key)}"
-    response = requests.get(url, timeout=timeout_s)
-    response.raise_for_status()
-    return response
-
-
-if __name__ == "__main__":
-    HOST = "127.0.0.1"
-    PORT = 8000
-
-    print("Ping:", ping(HOST, PORT))
-
-    # Example 1: PNG bytes
-    # result = analyze_image_png_path(
-    #     HOST, PORT, "test.png", response_type="annotated_image", data="lineA", context_in_body=False
-    # )
-    # print("Flow result:", result.context.get("result"))
-
-    # Example 2: Raw numpy
-    # import cv2
-    # img = cv2.imread("test.png")
-    # result = analyze_raw_numpy(HOST, PORT, img, response_type="context", context_in_body=True)
-    # print("Context keys:", list(result.context.keys()))
+    if height <= 0 or width <= 0 or not image_bytes:
+        raise ValueError("raw image dimensions and body must be non-empty")
+    query: dict[str, Any] = {"height": height, "width": width}
+    if bayer:
+        query["bayer"] = bayer
+    url = _build_url(host, port, "analyze_raw_image", response_type, extra_query=query)
+    return _post(url, image_bytes, response_type, False, timeout, session)
