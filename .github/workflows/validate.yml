@@ -16,14 +16,14 @@ jobs:
       matrix:
         python-version: ["3.11", "3.13"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Check out pinned OpenAI skill validator
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: openai/skills
           ref: 49f948faa9258a0c61caceaf225e179651397431
           path: .cache/openai-skills
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
