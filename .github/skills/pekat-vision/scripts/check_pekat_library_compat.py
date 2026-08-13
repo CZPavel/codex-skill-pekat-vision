@@ -98,11 +98,11 @@ def render(report: dict[str, Any]) -> str:
         lines.append(f"Runtime: CPython {runtime['version']} / {runtime['abi']} / {runtime['wheel_platform']}")
     if "package" in report:
         item = report["package"]
-        lines.append(f"Package: {item['library']} ({item.get('import_name', 'unknown')}) {item.get('version', 'unknown')} — {item['status']}")
+        lines.append(f"Package: {item['library']} ({item.get('import_name', 'unknown')}) {item.get('version', 'unknown')} - {item['status']}")
         if item.get("notes"):
             lines.append(f"Boundary: {item['notes']}")
     if "wheel" in report:
-        lines.append(f"Wheel: {report['wheel']['status']} — {report['wheel']['reason']}")
+        lines.append(f"Wheel: {report['wheel']['status']} - {report['wheel']['reason']}")
     lines.append("Success gate: import inside PEKAT Code, preferably followed by one minimal functional call.")
     return "\n".join(lines)
 
