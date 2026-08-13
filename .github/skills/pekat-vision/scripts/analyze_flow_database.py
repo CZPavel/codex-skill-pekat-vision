@@ -354,7 +354,7 @@ def _directory_source(path: Path) -> ProjectSource:
     base = path
     if path.name in {"database", "database_old"}:
         base = path.parent
-    files = [item for item in base.rglob("*") if item.is_file()]
+    files = sorted((item for item in base.rglob("*") if item.is_file()), key=lambda item: item.as_posix())
     names = [item.relative_to(base).as_posix() for item in files]
     return ProjectSource(names, lambda name: (base / PurePosixPath(name)).read_bytes())
 
@@ -377,15 +377,16 @@ def _zip_source(path: Path) -> tuple[ProjectSource, zipfile.ZipFile]:
 
 
 def _find_layer_prefixes(names: list[str]) -> dict[str, str]:
-    layers: dict[str, str] = {}
+    found: dict[str, str] = {}
     for name in names:
         parts = PurePosixPath(name).parts
         for index, part in enumerate(parts):
             if part in {"database", "database_old"} and index + 1 < len(parts):
-                layers.setdefault(part, "/".join(parts[: index + 1]) + "/")
-    if not layers and any(PurePosixPath(name).name == "modules.db" for name in names):
-        layers["database"] = ""
-    return layers
+                found.setdefault(part, "/".join(parts[: index + 1]) + "/")
+    if not found and any(PurePosixPath(name).name == "modules.db" for name in names):
+        found["database"] = ""
+    # Current/live data must be reported before historical data on every OS.
+    return {name: found[name] for name in ("database", "database_old") if name in found}
 
 
 def _explicit_project_metadata(source: ProjectSource) -> list[dict[str, Any]]:

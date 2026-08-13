@@ -19,6 +19,7 @@ Status: **PASS for static/offline scope**
 - [x] ModuleSpec covers 3.19.3/4.0.1 extensions, entrypoint routing, four Form types, default/current-value handling, unique IDs and AST validation.
 - [x] Existing REST mocks cover success, timeout, HTTP error, invalid JSON and unavailable endpoint.
 - [x] FLOW analyzer uses no `pickle.load(s)`, rejects dangerous construction/execution opcodes, and runs on synthetic sanitized directory/ZIP fixtures.
+- [x] Current `database` is ordered before `database_old` deterministically across Windows/Linux filesystem enumeration.
 - [x] Industrial helpers remain dry-run/read-only unless mutation is explicitly approved.
 - [x] The 48-case golden routing fixture and bundle security scan remain passing.
 
