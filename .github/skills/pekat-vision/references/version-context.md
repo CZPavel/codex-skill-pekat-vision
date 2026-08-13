@@ -4,7 +4,7 @@
 
 - **Documented (D):** exact-version vendor/SDK contract.
 - **Runtime/UI tested (E):** reproduced on the stated version and path.
-- **Static/reverse-engineered (S/R):** observed in exports or project files; not a public API.
+- **Observed/static (S/R):** observed in exports or project files; not a public API.
 - **Practical (P):** useful field evidence that still needs reproduction.
 - **Open:** do not promote to fact.
 
@@ -20,9 +20,11 @@ Prefer current exact-version runtime/export evidence, then exact-version documen
 | Export | exact schema/extension open | `.pmodule`, root `type/module/version` observed (R) | `.ptool`, root `type/module/version`, create/edit/run/export tested (R/E); import/reimport open |
 | GlobalData | not established | Inspection may show `globalData: null`; do not claim API/persistence | `context["globalData"]` is a dict shared by Code tools and persisted between evaluations while the project ran (E); restart/concurrent-write semantics open |
 | DB topology | exact disk schema open | protocol-4 `modules.db`/`sort` contract observed (S/E) | same topology grammar observed; record fields are migration/lineage-aware (S/E) |
-| Audited Windows ABI | unknown | `cp310` on one PC | `cp312` on one PC |
+| Audited Windows ABI | unknown | `cp310` on one PC | direct Code test: CPython 3.12.12, `cp312`, AMD64 on one installation |
 
 ABI values are local fingerprints, not universal guarantees. Re-probe another installation with `scripts/runtime_fingerprint.py`.
+For the complete 4.0.1 import/function matrix and flattened-metadata caveat, read
+`code-runtime-pekat401.md`; never project that matrix onto 3.19.3.
 
 ## Context cards
 

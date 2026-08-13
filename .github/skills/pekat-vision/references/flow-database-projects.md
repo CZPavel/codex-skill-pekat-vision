@@ -2,7 +2,7 @@
 
 ## Scope and safety
 
-This contract is reverse-engineered from controlled PEKAT 3.19.3 and 4.x project evidence. It is not a public vendor API. PEKAT 3.18 disk schema remains open.
+This contract comes from controlled PEKAT 3.19.3 and 4.x project observations. It is not a public vendor API. PEKAT 3.18 disk schema remains open.
 
 Observed project `.db` files are Python Pickle protocol 4, not SQLite. Never call `pickle.load()`/`pickle.loads()` on user-supplied project data. Use:
 

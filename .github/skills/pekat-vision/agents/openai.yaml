@@ -1,4 +1,4 @@
 interface:
   display_name: "PEKAT VISION 3.18-4.0"
-  short_description: "PEKAT Code, Forms, FLOW, databases, and integration"
-  default_prompt: "Use $pekat-vision to solve a version-correct PEKAT VISION task with the simplest safe implementation."
+  short_description: "PEKAT Code, runtime, logs, projects, libraries, REST, and TCP"
+  default_prompt: "Use $pekat-vision to diagnose or solve a version-correct PEKAT VISION task with the smallest safe implementation and explicit runtime/dependency boundaries."

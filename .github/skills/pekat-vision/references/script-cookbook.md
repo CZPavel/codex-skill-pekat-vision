@@ -2,6 +2,12 @@
 
 These are small patterns, not universal modules. Select the exact-version entrypoint from `version-context.md`; examples without Form use `main(context)`. Declare Context inputs/outputs and side effects. Prefer a native PEKAT tool/Gate before Code.
 
+Before importing a non-standard library, route PEKAT 4.0.1 through
+`code-runtime-pekat401.md`. Prefer native PEKAT → simple FLOW → NumPy/OpenCV →
+SciPy/skimage/sklearn → bounded communication → heavy ML/GPU → a new dependency.
+For `.ptool`/`.pmodule`, apply the external dependency rule in
+`code-library-installation.md`.
+
 ## Stop the current branch
 
 STOP_IF_OK:

@@ -23,6 +23,11 @@ If a specialized skill is unavailable, use current primary vendor documents and 
 
 ## Basler integration choices
 
+On the directly tested PEKAT 4.0.1 installation, `pypylon` imported and
+`TlFactory`/device enumeration completed; `genicam` imported and the Harvesters
+object layer was functional. This establishes Code capability, not physical
+camera acquisition or universal clean-install availability.
+
 Choose one explicit owner:
 
 1. PEKAT native camera/provider path;

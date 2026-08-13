@@ -1,0 +1,631 @@
+{
+  "schema_version": "1.0",
+  "product_version": "4.0.1",
+  "scope": "Directly tested local PEKAT VISION 4.0.1 Code runtime on 2026-08-13; re-probe changed installations.",
+  "python": {
+    "implementation": "CPython",
+    "version": "3.12.12",
+    "abi": "cp312",
+    "architecture": "AMD64",
+    "wheel_platform": "win_amd64",
+    "host_executable": "pekat_vision_server.exe",
+    "prefix": "C:\\Program Files\\PEKAT VISION 4.0.1\\server"
+  },
+  "probe_summary": {
+    "targeted_imports": 58,
+    "import_pass": 46,
+    "present_import_failed": 2,
+    "unavailable": 10,
+    "functional_tests": 24,
+    "functional_pass": 24
+  },
+  "metadata_caveat": "Flattened packaging exposed 24 distributions while 46 targeted imports passed; prefer a direct Code import probe over pip/importlib metadata.",
+  "packages": [
+    {
+      "library": "numpy",
+      "import_name": "numpy",
+      "version": "2.4.3",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F01",
+          "operation": "matrix multiplication",
+          "boundary": "synthetic in-memory array operation"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "library": "scipy",
+      "import_name": "scipy",
+      "version": "1.17.1",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F03",
+          "operation": "scipy.ndimage.gaussian_filter",
+          "boundary": "synthetic in-memory array"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "library": "sympy",
+      "import_name": "sympy",
+      "version": "1.14.0",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "scikit-learn",
+      "import_name": "sklearn",
+      "version": "1.5.2",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F05",
+          "operation": "KNeighborsClassifier fit and predict",
+          "boundary": "synthetic in-memory data"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "library": "scikit-image",
+      "import_name": "skimage",
+      "version": "0.24.0",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F04",
+          "operation": "connected-component labeling",
+          "boundary": "synthetic in-memory image"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "library": "opencv-python-headless",
+      "import_name": "cv2",
+      "version": "4.13.0",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F02",
+          "operation": "synthetic BGR to gray plus Canny",
+          "boundary": "synthetic image; no camera/file access"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "library": "Pillow",
+      "import_name": "PIL",
+      "version": "11.0.0",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "tifffile",
+      "import_name": "tifffile",
+      "version": "2026.5.15",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "albumentations",
+      "import_name": "albumentations",
+      "version": "2.0.8",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "matplotlib",
+      "import_name": "matplotlib",
+      "version": "3.10.9",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "torch",
+      "import_name": "torch",
+      "version": "2.7.1+cu128",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F06",
+          "operation": "CPU tensor calculation",
+          "boundary": "real CPU tensor operation"
+        },
+        {
+          "id": "F07",
+          "operation": "CUDA tensor calculation and synchronize",
+          "boundary": "RTX A5000 Laptop GPU; CUDA 12.8; cuDNN 90701; CC 8.6"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "library": "torchvision",
+      "import_name": "torchvision",
+      "version": "0.22.1+cu128",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F08",
+          "operation": "construct ResNet18 weights=None",
+          "boundary": "11,689,512 parameters; capability only, not PEKAT classifier attribution"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "library": "timm",
+      "import_name": "timm",
+      "version": "0.6.7",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F09",
+          "operation": "construct mobilenetv3_small_050 pretrained=False",
+          "boundary": "1,593,224 parameters; capability only"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "library": "onnx",
+      "import_name": "onnx",
+      "version": "1.20.1",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F12",
+          "operation": "build/check/serialize graph in memory",
+          "boundary": "tooling only; no inference"
+        }
+      ],
+      "notes": "Model tooling verified; inference not tested."
+    },
+    {
+      "library": "tensorrt",
+      "import_name": "tensorrt",
+      "version": "10.13.0.35",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F13",
+          "operation": "create tensorrt.Runtime",
+          "boundary": "runtime creation only; no engine build or inference"
+        }
+      ],
+      "notes": "Runtime construction verified; engine build and inference not tested."
+    },
+    {
+      "library": "detectron2",
+      "import_name": "detectron2",
+      "version": "0.6",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "sam2",
+      "import_name": "sam2",
+      "version": "unknown",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "faiss",
+      "import_name": "faiss",
+      "version": "1.14.1",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F10",
+          "operation": "CPU IndexFlatL2 add and nearest search",
+          "boundary": "nearest index 1; distance 0.020000"
+        },
+        {
+          "id": "F11",
+          "operation": "get_num_gpus",
+          "boundary": "returned 1; GPU visibility only, not GPU search"
+        }
+      ],
+      "notes": "CPU search verified; GPU count 1 is visibility, not GPU search."
+    },
+    {
+      "library": "pytorch-grad-cam",
+      "import_name": "pytorch_grad_cam",
+      "version": "unknown",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "pekat-yolo",
+      "import_name": "pekat_yolo",
+      "version": "unknown",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "pypylon",
+      "import_name": "pypylon",
+      "version": "unknown",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F16",
+          "operation": "TlFactory init and EnumerateDevices",
+          "boundary": "zero devices; runtime/init/enumeration only, no acquisition"
+        }
+      ],
+      "notes": "Runtime initialization and enumeration verified with zero devices; no physical acquisition."
+    },
+    {
+      "library": "genicam",
+      "import_name": "genicam",
+      "version": "1.5.1",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "harvesters",
+      "import_name": "harvesters",
+      "version": "1.4.2",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F17",
+          "operation": "create Harvester object",
+          "boundary": "object layer only; no CTI/device/acquisition"
+        }
+      ],
+      "notes": "Object creation verified; no CTI/device acquisition."
+    },
+    {
+      "library": "pytelicam",
+      "import_name": "pytelicam",
+      "version": "1.1.1",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "requests",
+      "import_name": "requests",
+      "version": "2.32.5",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F19",
+          "operation": "create requests.Session",
+          "boundary": "no network request"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "library": "urllib3",
+      "import_name": "urllib3",
+      "version": "2.7.0",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "websocket-client",
+      "import_name": "websocket",
+      "version": "1.9.0",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "python-socketio",
+      "import_name": "socketio",
+      "version": "unknown",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "python-engineio",
+      "import_name": "engineio",
+      "version": "unknown",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "paramiko",
+      "import_name": "paramiko",
+      "version": "3.5.0",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "python-snap7",
+      "import_name": "snap7",
+      "version": "2.0.2",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F18",
+          "operation": "create/destroy Client and inspect connected=False",
+          "boundary": "no network or PLC communication"
+        }
+      ],
+      "notes": "Client construction verified; no PLC communication."
+    },
+    {
+      "library": "Flask",
+      "import_name": "flask",
+      "version": "2.2.2",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "gevent",
+      "import_name": "gevent",
+      "version": "24.11.1",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "zxing-cpp",
+      "import_name": "zxingcpp",
+      "version": "3.1.0",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F14",
+          "operation": "read_barcodes on blank image",
+          "boundary": "native decoder path operational; zero detections expected"
+        }
+      ],
+      "notes": "Additional local installation confirmed on the tested PC; not a clean-install guarantee."
+    },
+    {
+      "library": "pyzbar",
+      "import_name": "pyzbar",
+      "version": "0.1.9",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F15",
+          "operation": "deep import and decode blank image",
+          "boundary": "native ZBar path operational; zero detections expected"
+        }
+      ],
+      "notes": "Likely additional local installation; native ZBar functional on the tested PC; not a clean-install guarantee."
+    },
+    {
+      "library": "openpyxl",
+      "import_name": "openpyxl",
+      "version": "3.1.4",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F20",
+          "operation": "workbook and cell read/write in memory",
+          "boundary": "no disk write"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "library": "PyYAML",
+      "import_name": "yaml",
+      "version": "6.0.3",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F21",
+          "operation": "yaml.safe_load",
+          "boundary": "in-memory scalar mapping"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "library": "psutil",
+      "import_name": "psutil",
+      "version": "5.9.5",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F22",
+          "operation": "inspect current process",
+          "boundary": "PID 23348 observed; name pekat_vision_server.exe; approximately 1191 MB"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "library": "pywin32",
+      "import_name": "win32api",
+      "version": "unknown",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F23",
+          "operation": "GetVersionEx",
+          "boundary": "read-only operating-system query"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "library": "pywin32",
+      "import_name": "win32com",
+      "version": "unknown",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "watchdog",
+      "import_name": "watchdog",
+      "version": "unknown",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "regex",
+      "import_name": "regex",
+      "version": "2026.5.9",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "tqdm",
+      "import_name": "tqdm",
+      "version": "4.67.3",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "pydantic",
+      "import_name": "pydantic",
+      "version": "2.12.5",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "APScheduler",
+      "import_name": "apscheduler",
+      "version": "3.10.4",
+      "status": "import_verified",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "cryptography",
+      "import_name": "cryptography",
+      "version": "46.0.3",
+      "status": "functionally_verified",
+      "functional_tests": [
+        {
+          "id": "F24",
+          "operation": "SHA-256 digest",
+          "boundary": "in-memory digest"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "library": "imageio",
+      "import_name": "imageio",
+      "version": "unknown",
+      "status": "present_import_failed",
+      "functional_tests": [],
+      "notes": "Package present, but import fails because flattened distribution metadata is unavailable."
+    },
+    {
+      "library": "vmbpy",
+      "import_name": "vmbpy",
+      "version": "unknown",
+      "status": "present_import_failed",
+      "functional_tests": [],
+      "notes": "Python layer present, but VmbC.dll/Vimba X runtime is missing or not configured."
+    },
+    {
+      "library": "torchaudio",
+      "import_name": "torchaudio",
+      "version": "unknown",
+      "status": "unavailable",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "onnxruntime",
+      "import_name": "onnxruntime",
+      "version": "unknown",
+      "status": "unavailable",
+      "functional_tests": [],
+      "notes": "Unavailable on the tested Code sys.path even though an auxiliary copy existed elsewhere."
+    },
+    {
+      "library": "tensorflow",
+      "import_name": "tensorflow",
+      "version": "unknown",
+      "status": "unavailable",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "keras",
+      "import_name": "keras",
+      "version": "unknown",
+      "status": "unavailable",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "cupy",
+      "import_name": "cupy",
+      "version": "unknown",
+      "status": "unavailable",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "numba",
+      "import_name": "numba",
+      "version": "unknown",
+      "status": "unavailable",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "pycuda",
+      "import_name": "pycuda",
+      "version": "unknown",
+      "status": "unavailable",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "pylibdmtx",
+      "import_name": "pylibdmtx",
+      "version": "unknown",
+      "status": "unavailable",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "qrcode",
+      "import_name": "qrcode",
+      "version": "unknown",
+      "status": "unavailable",
+      "functional_tests": [],
+      "notes": ""
+    },
+    {
+      "library": "pandas",
+      "import_name": "pandas",
+      "version": "unknown",
+      "status": "unavailable",
+      "functional_tests": [],
+      "notes": ""
+    }
+  ]
+}

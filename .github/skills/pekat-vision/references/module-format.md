@@ -10,6 +10,12 @@
 
 A module/tool export is one Code step, not a project and not a sandbox. Never rename `.pmodule` to `.ptool` or only edit the root version.
 
+An export also does not bundle an arbitrary external Python dependency. If
+`sourceCode` imports a non-standard package, record the required package,
+target PEKAT version/ABI, tested version/evidence level and destination Code
+import test. A package verified in the 4.0.1 matrix is not thereby available in
+3.19.3 or on another PC. See `code-library-installation.md`.
+
 ## Observed envelope
 
 ```json

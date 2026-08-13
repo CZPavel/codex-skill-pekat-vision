@@ -524,7 +524,7 @@ def analyze_project(path: Path) -> dict[str, Any]:
         report = {
             "source": str(path.resolve()),
             "source_kind": source_kind,
-            "evidence_scope": "reverse_engineered_observed_schema_not_public_vendor_API",
+            "evidence_scope": "observed_project_schema_not_public_vendor_API",
             "explicit_project_metadata": _explicit_project_metadata(source),
             "database_layers": [
                 _analyze_layer(source, layer, prefix) for layer, prefix in layers.items()

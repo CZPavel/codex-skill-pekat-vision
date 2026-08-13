@@ -7,6 +7,7 @@ import yaml
 REPO = Path(__file__).resolve().parents[1]
 SKILL = REPO / ".github" / "skills" / "pekat-vision"
 PRIVATE_IP = re.compile(r"\b(?:10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2})\b")
+SAFE_VERSION_LITERALS = {"10.13.0.35"}  # TensorRT package version, not an endpoint.
 
 
 def test_skill_contains_only_expected_resource_types():
@@ -27,7 +28,10 @@ def test_no_private_data_or_unsafe_tls_setting():
         if not path.is_file():
             continue
         text = path.read_text(encoding="utf-8", errors="replace")
-        assert not PRIVATE_IP.search(text), path
+        endpoint_scan = text
+        for version in SAFE_VERSION_LITERALS:
+            endpoint_scan = endpoint_scan.replace(version, "<package-version>")
+        assert not PRIVATE_IP.search(endpoint_scan), path
         assert not any(value.lower() in text.lower() for value in forbidden), path
     python_text = "\n".join(path.read_text(encoding="utf-8") for path in (SKILL / "scripts").glob("*.py"))
     assert "module_item" not in python_text

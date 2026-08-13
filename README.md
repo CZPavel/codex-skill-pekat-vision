@@ -7,6 +7,8 @@ Public, version-aware Codex skill for PEKAT VISION 3.18.x, 3.19.3 and 4.0.1. The
 - Generate and validate Code plus 3.19.3 `.pmodule` / 4.0.1 `.ptool` exports while keeping 3.18 export gates explicit.
 - Route exact `main(...)` signatures, Context, `result`/`exit`, Form runtime values and PEKAT 4 GlobalData.
 - Safely analyze a PEKAT project/database directory or ZIP: restricted non-executing protocol-4 Pickle reader, recursive `modules.sort`/Parallelism, active/disabled/soft-deleted state, Filter/Gate rules, Code dependencies/side effects, and separate `database_old` migration diff.
+- Analyze `output.log` families and project metadata/runtime state without treating `running.db` as process liveness.
+- Route the directly tested PEKAT 4.0.1 Code library matrix, `cp312`/`win_amd64` wheel compatibility, and evidence-backed third-party library staging/acceptance.
 - Distinguish REST/SDK, Projects Manager, Cross-PEKAT, GlobalData and PEKAT Output, with bounded failure handling rather than automatic reliability frameworks.
 - Route PEKAT-side MX-G2000/smart-camera/Basler/IFM integration and solve FOV/optics/lighting/motion/dataset constraints before overbuilding FLOW.
 
@@ -41,6 +43,9 @@ Offline analyzer smoke:
 
 ```powershell
 python .github/skills/pekat-vision/scripts/analyze_flow_database.py <project-or-database.zip> --output flow-report.json
+python .github/skills/pekat-vision/scripts/analyze_pekat_log.py <project-or-logs>
+python .github/skills/pekat-vision/scripts/pekat_project_diagnostics.py <project> --json
+python .github/skills/pekat-vision/scripts/check_pekat_library_compat.py --pekat-version 4.0.1 --package scipy
 ```
 
 Automated validation never starts PEKAT or writes to a project, PLC, IO-Link device, camera, or Projects Manager.
