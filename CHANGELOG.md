@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased - 2026-08-13
+
+- Added 3.18.x routing while keeping its export/database contracts explicitly open.
+- Aligned Code signatures, PEKAT 4 Form default/current-state types and GlobalData guidance with current exact-version evidence.
+- Added a restricted non-executing Pickle protocol-4 reader and offline FLOW/database ZIP analyzer with recursive Parallelism, module states, Filter/Gate, Code dependency/side-effect and `database_old` handling.
+- Replaced the historical script catalog with small native-first recipes and a simplicity/complexity gate.
+- Clarified REST/SDK/Projects Manager/Cross-PEKAT responsibilities and conditional reliability behavior.
+- Added PEKAT-specific hardware routing plus vision-design feasibility guidance.
+- Expanded regression coverage from 21 to 37 tests.
+
 ## 2.0.0 - 2026-07-14
 
 - Breaking: replaced legacy `module_item` entrypoints with `main(context, form=None)` and `form or {}`.

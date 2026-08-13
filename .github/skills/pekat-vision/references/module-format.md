@@ -1,69 +1,104 @@
-# Form Editor and ModuleSpec
+# PModule, PTool, and Form Editor
 
-## Contents
+## Route by version
 
-- [Entrypoints](#entrypoints)
-- [ModuleSpec](#modulespec)
-- [Form items](#form-items)
-- [Envelope](#envelope)
-- [Generation](#generation)
+| Version | Generate | Entrypoint rule | Evidence boundary |
+|---|---|---|---|
+| 3.18.x | Do not generate without an exact export/schema | No universal signature: documentation contains `main(context)` and legacy alternatives | Code documented; current Form/export schema open |
+| 3.19.3 | `.pmodule` | Form exports use `main(context, form)`; no-Form `main(context)` is safe, while a fresh UI record also stored two args with empty Form | JSON/export static evidence; exact runtime/round-trip open |
+| 4.0.1 | `.ptool` | `main(context)` without Form; `main(context, form)` with Form | Both signatures and Form runtime tested; create/edit/run/export tested; import/reimport open |
 
-## Entrypoints
+A module/tool export is one Code step, not a project and not a sandbox. Never rename `.pmodule` to `.ptool` or only edit the root version.
 
-Use this pattern when a form exists:
+## Observed envelope
 
-```python
-def main(context, form=None):
-    values = form or {}
-    threshold = float(values.get("threshold", 0.5))
-    context["threshold_used"] = threshold
+```json
+{
+  "type": "CODE",
+  "module": {
+    "label": "Purpose",
+    "id": 1700000000000,
+    "type": "CODE",
+    "note": "Inputs, outputs, side effects and failure mode",
+    "gpuSettings": [],
+    "softDeletedDate": null,
+    "sourceCode": "def main(context):\n    pass\n",
+    "form": [],
+    "formValues": {},
+    "showImagePreview": true,
+    "editDate": 1700000000000,
+    "isActive": true
+  },
+  "version": "4.0.1"
+}
 ```
 
-Without Form Editor items, `main(context)` is valid. Form values are not `context["operatorInput"]`. Sources: `[pekat-kb-3-19-3-page-1262551042]`, `[pekat-kb-4-0-1-page-1513132287]`, `[pekat-module-export-schema-v1]`.
+This is an observed 3.19.3/4.0.1 family, not a public promise for all releases. Generate unique positive integer IDs and check collisions before import.
 
-## ModuleSpec
+## Form definition versus current state
+
+- `module.form` defines UI controls. Runtime keys are `formKey`, not `label`.
+- `form[*].defaultValue` is the defined default.
+- `module.formValues` contains saved current/changed values by `formKey`; in a 4.0.1 UI test it was empty before edits and populated after edits without changing defaults.
+- `form` is a runtime dict and is separate from `context["operatorInput"]`.
+
+Runtime-tested PEKAT 4.0.1 representations:
+
+| Type | Untouched default | After UI edit | Normalize when used |
+|---|---|---|---|
+| text | `str` | `str` | `str`, then domain validation |
+| number | e.g. `"12"` (`str`) | e.g. `27` (`int`) | reject bool; `float`/`int`; range check |
+| checkbox | `bool` | `bool` | require bool; explicitly parse known legacy strings only if needed |
+| select | e.g. `"0"` index string | e.g. `"manual"` text | allow valid index or allowlisted text |
+
+Use `scripts/form_normalization.py` or copy only the small helper needed into a PEKAT Code module. Do not use `bool("false")`.
+
+```python
+def main(context, form):
+    values = form if isinstance(form, dict) else {}
+    try:
+        threshold = float(values.get("threshold", 12))
+    except (TypeError, ValueError):
+        context["code_error"] = "threshold must be numeric"
+        return
+```
+
+Changing the local runtime dict is not a UI persistence API.
+
+## Generator contract
+
+`scripts/generate_code_module.py` accepts a small JSON ModuleSpec validated by `references/module_spec.schema.json`:
 
 ```json
 {
   "target_version": "4.0.1",
-  "label": "Threshold example",
-  "note": "Isolated fixture",
-  "source_code": "def main(context, form=None):\n    values = form or {}\n    context['threshold_used'] = float(values.get('threshold', 0.5))\n",
-  "form": [],
-  "form_values": {},
-  "show_image_preview": true,
-  "is_active": true
+  "label": "Threshold",
+  "note": "Reads image and threshold; changes image only",
+  "source_code": "def main(context, form):\n    pass\n",
+  "form": [
+    {"type":"number","formKey":"threshold","label":"Threshold","defaultValue":"12","min":"0","max":"255"},
+    {"type":"select","formKey":"mode","label":"Mode","defaultValue":"0","options":"auto;manual"}
+  ],
+  "form_values": {}
 }
 ```
 
-Required fields are `target_version`, `label`, and `source_code`. Optional `module_id` must be an integer. `formValues` may only contain declared `formKey` names.
-
-## Form items
-
-All items contain `type`, `formKey`, `label`, `defaultValue`, and optional `visibility`.
-
-- `text`: default is a string.
-- `number`: default accepts a number/numeric string and normalizes to a number; optional `min`/`max` must be ordered.
-- `checkbox`: default/value normalizes to boolean.
-- `select`: `options` is a non-empty semicolon-separated string; default/value must match an option.
-
-Form keys are unique identifiers matching `^[A-Za-z_][A-Za-z0-9_]*$`.
-
-## Envelope
-
-The output contains `type="CODE"`, `module`, and exact `version`. Module data contains `label`, integer `id`, `type="CODE"`, `note`, `sourceCode`, `form`, `formValues`, `gpuSettings=[]`, `softDeletedDate=null`, integer `editDate`, `showImagePreview`, and `isActive`.
-
-Routing is strict:
-
-- `3.19.3` -> UTF-8 JSON `.pmodule`
-- `4.0.1` -> UTF-8 JSON `.ptool`
-
-IDs are monotonic epoch-millisecond integers. Static validation does not prove PEKAT UI compatibility.
-
-## Generation
-
 ```powershell
-python scripts/generate_code_module.py spec.json --output build/my_module
+python scripts/generate_code_module.py spec.json --output threshold
 ```
 
-The extension is derived from `target_version`. Validate the result with `references/module_spec.schema.json`, then import it only into a new isolated project and perform display/edit/run/export round-trip testing.
+The generator derives the extension, validates JSON types, unique Form keys/IDs, Form values, and Python AST/entrypoint. It writes UTF-8 JSON and never opens PEKAT.
+
+## Acceptance sequence
+
+1. Preserve/hash the original; generate beside it.
+2. Run JSON schema, Python AST, and security/static checks.
+3. Import into a new isolated exact-version project.
+4. Verify label/note/activity/code/Form order/defaults/current values.
+5. Run representative images and inspect Context/stdout/stderr.
+6. Export under a new name and compare semantic fields.
+7. Reimport into another clean project.
+
+Until steps 3-7 are actually performed, report `statically_validated / UI round-trip open`, not runtime PASS.
+
+Legacy public evidence ID retained for regression routing: `pekat-module-export-schema-v1`.

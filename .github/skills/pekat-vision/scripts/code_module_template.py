@@ -1,5 +1,6 @@
-"""Version-aware PEKAT Code module template with Form Editor values.
+"""Minimal PEKAT Code module template with Form Editor values.
 
+Use for the observed 3.19.3/4.0.1 Form entrypoint after exact-version routing.
 The template intentionally does not persist process-global state or mutate result.
 """
 from __future__ import annotations
@@ -45,9 +46,9 @@ def _crop(image: Any, rectangle: dict[str, Any]) -> Any | None:
     return cropped.copy() if hasattr(cropped, "copy") else cropped
 
 
-def main(context: dict[str, Any], form: dict[str, Any] | None = None) -> None:
+def main(context: dict[str, Any], form: dict[str, Any]) -> None:
     """Optionally crop the image and write diagnostics without changing result."""
-    values = form or {}
+    values = form if isinstance(form, dict) else {}
     target_label = values.get("target_label")
     crop_enabled = bool(values.get("crop_enabled", False))
 

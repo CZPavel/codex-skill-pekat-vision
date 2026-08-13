@@ -1,27 +1,30 @@
 # Codex Skill: PEKAT VISION
 
-Public, version-aware Codex skill for PEKAT VISION 3.19.3 and 4.0.1. It covers Code modules and Form Editor exports, Context/GlobalData migration, REST/SDK/Projects Manager, external runtime ABI and barcode libraries, and guarded IFM/IO-Link, PLC/Snap7, MX-G2000, and Baumer workflows.
+Public, version-aware Codex skill for PEKAT VISION 3.18.x, 3.19.3 and 4.0.1. The canonical skill is `.github/skills/pekat-vision`; no domain scripts/references are mirrored elsewhere in this repository.
 
-## Canonical skill
+## Capabilities
 
-The only publishable skill is `.github/skills/pekat-vision`. Domain scripts and references are not mirrored elsewhere in the repository.
+- Generate and validate Code plus 3.19.3 `.pmodule` / 4.0.1 `.ptool` exports while keeping 3.18 export gates explicit.
+- Route exact `main(...)` signatures, Context, `result`/`exit`, Form runtime values and PEKAT 4 GlobalData.
+- Safely analyze a PEKAT project/database directory or ZIP: restricted non-executing protocol-4 Pickle reader, recursive `modules.sort`/Parallelism, active/disabled/soft-deleted state, Filter/Gate rules, Code dependencies/side effects, and separate `database_old` migration diff.
+- Distinguish REST/SDK, Projects Manager, Cross-PEKAT, GlobalData and PEKAT Output, with bounded failure handling rather than automatic reliability frameworks.
+- Route PEKAT-side MX-G2000/smart-camera/Basler/IFM integration and solve FOV/optics/lighting/motion/dataset constraints before overbuilding FLOW.
 
-Key capabilities:
+The skill defaults project/device/lifecycle operations to read-only or dry-run and contains only sanitized general knowledge and synthetic fixtures.
 
-- Generate validated `.pmodule` (3.19.3) and `.ptool` (4.0.1) files.
-- Use `main(context, form=None)` for Form Editor modules and keep `operatorInput` separate.
-- Build robust binary PNG REST clients with timeouts and guarded parsing.
-- Match native libraries to PEKAT's Python ABI and architecture.
-- Default industrial I/O and project lifecycle operations to read-only/dry-run.
+## Installation or update
 
-## Installation
+Install from the canonical checkout without creating a divergent second source:
 
 ```powershell
-$Installer = Join-Path $env:USERPROFILE ".codex\skills\.system\skill-installer\scripts\install-skill-from-github.py"
-python $Installer --repo CZPavel/codex-skill-pekat-vision --ref v2.0.0 --path .github/skills/pekat-vision --name pekat-vision
+$Source = ".github\skills\pekat-vision"
+$Target = Join-Path $env:USERPROFILE ".codex\skills\pekat-vision"
+if (Test-Path $Target) { Copy-Item "$Target\SKILL.md" "$Target\SKILL.md.bak" -Force }
+New-Item -ItemType Directory -Path $Target -Force | Out-Null
+Copy-Item "$Source\*" $Target -Recurse -Force
 ```
 
-The installer requires that the destination does not already exist. Back up and replace an existing installation outside synchronized/committed paths.
+The backup is intentionally preserved. For a clean first install, Skill Installer may be used against this repository/path; it requires an absent destination.
 
 ## Validation
 
@@ -30,12 +33,25 @@ $Validator = Join-Path $env:USERPROFILE ".codex\skills\.system\skill-creator\scr
 python $Validator .github/skills/pekat-vision
 python -m pip install -r requirements-dev.txt
 python -m pytest -q
+python -m compileall -q .github/skills/pekat-vision/scripts
+git diff --check
 ```
 
-The automated suite is offline and does not write to PEKAT, PLC, IO-Link, cameras, or Projects Manager. PEKAT UI import/display/edit/export round-trip remains a manual test in new isolated projects.
+Offline analyzer smoke:
 
-## Security
+```powershell
+python .github/skills/pekat-vision/scripts/analyze_flow_database.py <project-or-database.zip> --output flow-report.json
+```
 
-The skill contains sanitized derived notes and safe fixtures only. It excludes raw proprietary manuals, Confluence bodies, credentials, private addresses, real project identifiers, virtual environments, and Codex authentication/state.
+Automated validation never starts PEKAT or writes to a project, PLC, IO-Link device, camera, or Projects Manager.
 
-Licensed under MIT; source documentation and device manuals retain their own terms.
+## Known open gates
+
+- clean PEKAT 3.18 DB/export fixture and exact current Form/export contract;
+- 3.19.3 Form runtime plus full `.pmodule` round-trip;
+- 4.0.1 generated `.ptool` import/reimport;
+- universal PEKAT DB writer (intentionally not implemented);
+- live REST/SDK/Projects Manager/Cross-PEKAT regression on current installs;
+- exact physical camera/IO-Link/vision acceptance.
+
+Static/schema/AST tests are not described as PEKAT runtime or UI proof.

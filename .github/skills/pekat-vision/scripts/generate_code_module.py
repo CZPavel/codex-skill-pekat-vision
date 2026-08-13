@@ -110,7 +110,10 @@ class FormItem:
         if self.type == "text":
             self.defaultValue = "" if self.defaultValue is None else str(self.defaultValue)
         elif self.type == "number":
-            self.defaultValue = _number(self.defaultValue, f"{self.formKey}.defaultValue")
+            # Validate but preserve the serialized default representation.  In
+            # PEKAT 4.0.1 an untouched number default was observed as str while
+            # the same value after a UI edit was observed as int.
+            _number(self.defaultValue, f"{self.formKey}.defaultValue")
             if self.min != "":
                 _number(self.min, f"{self.formKey}.min")
             if self.max != "":
@@ -126,7 +129,10 @@ class FormItem:
             self.options = ";".join(choices)
             self.defaultValue = str(self.defaultValue)
             if self.defaultValue not in choices:
-                raise ModuleSpecError(f"{self.formKey}: defaultValue is not present in options")
+                if not self.defaultValue.isdigit() or not 0 <= int(self.defaultValue) < len(choices):
+                    raise ModuleSpecError(
+                        f"{self.formKey}: defaultValue is neither an option nor a valid option index"
+                    )
 
     def normalize_value(self, value: Any) -> Any:
         if self.type == "number":
@@ -135,7 +141,9 @@ class FormItem:
             return _boolean(value, self.formKey)
         value = str(value)
         if self.type == "select" and value not in self.options.split(";"):
-            raise ModuleSpecError(f"{self.formKey}: value is not present in options")
+            choices = self.options.split(";")
+            if not value.isdigit() or not 0 <= int(value) < len(choices):
+                raise ModuleSpecError(f"{self.formKey}: value is neither an option nor a valid option index")
         return value
 
     def export(self, generated_id: int) -> dict[str, Any]:
@@ -208,10 +216,18 @@ class ModuleSpec:
         if len(mains) != 1:
             raise ModuleSpecError("source_code must define exactly one top-level main function")
         args = [arg.arg for arg in mains[0].args.args]
-        if not args or args[0] != "context":
-            raise ModuleSpecError("main first argument must be context")
-        if self.form and (len(args) < 2 or args[1] != "form"):
-            raise ModuleSpecError("modules with Form Editor items must use main(context, form=None)")
+        if mains[0].args.vararg or mains[0].args.kwarg or mains[0].args.kwonlyargs:
+            raise ModuleSpecError("main must not use variadic or keyword-only arguments")
+        if self.form:
+            if args != ["context", "form"]:
+                raise ModuleSpecError("modules with Form Editor items must use main(context, form)")
+        elif self.target_version == "4.0.1":
+            if args != ["context"]:
+                raise ModuleSpecError("PEKAT 4.0.1 modules without Form must use main(context)")
+        elif args not in (["context"], ["context", "form"]):
+            raise ModuleSpecError(
+                "PEKAT 3.19.3 modules without Form must use main(context) or the observed UI template main(context, form)"
+            )
 
     @property
     def extension(self) -> str:

@@ -1,99 +1,170 @@
-Document ID: [03_script_cookbook_module_schema]
+# Minimal PEKAT Code cookbook
 
-> Public-safe curated derivative. Facts cite document IDs in square brackets; an inference is explicitly labeled. Never substitute this file for the exact device/runtime manual.
+These are small patterns, not universal modules. Select the exact-version entrypoint from `version-context.md`; examples without Form use `main(context)`. Declare Context inputs/outputs and side effects. Prefer a native PEKAT tool/Gate before Code.
 
-# Script cookbook and module export schema
+## Stop the current branch
 
-## Safe generation contract
+STOP_IF_OK:
 
-Ask for target version, flow position, input/output context keys, image dtype/shape, result semantics, permitted external libraries and whether device writes are allowed. Default to no device writes. Return standalone Python, a form table, a generated import file, and isolated import/test instructions.
+```python
+def main(context):
+    if context.get("result") is True:
+        context["exit"] = True
+```
 
-The catalog below is a static description of owner-provided legacy examples, not an endorsement of every dependency or state pattern. Do not copy `__main__` state, private endpoints, unchecked device writes, or legacy signatures into new code. Rebuild each solution under the v2 rules in `SKILL.md`.
+STOP_IF_NOK:
 
-An export contains `type=CODE`, `module`, `version`; module fields include label/id/type/note/sourceCode/form/formValues/gpuSettings/softDeletedDate/editDate/showImagePreview/isActive. `number` accepts numeric source strings but exports normalized numeric values; checkbox is boolean; select default/value must match an option. [pekat-module-export-schema-v1]
+```python
+def main(context):
+    if context.get("result") is False:
+        context["exit"] = True
+```
 
-## Curated catalog
+Custom branch condition:
 
-### AI_TRIGGER_V06_TESTED [curated-script-ai-trigger-v06-tested]
+```python
+def main(context):
+    if context.get("still_ok") is True:
+        context["exit"] = True
+```
 
-Trigger an AI/remote inference branch with diagnostics. Flow: Code module; confirm ordering from required context reads and writes. Reads: `none detected`. Writes: `ai_trigger_state, exit`. Dependencies: `__main__`. Risks: Context schema and image dtype must be verified in an isolated project.
+`exit=True` terminates only the current branch in Parallelism. Distinguish explicit `True`, `False`, and possible `None`.
 
-### AUTO_HDR [curated-script-auto-hdr]
+## Conditional FLOW with a custom Context flag
 
-Create an HDR-like image representation. Flow: Code module; confirm ordering from required context reads and writes. Reads: `image, operatorInput`. Writes: `auto_exposure_error, image`. Dependencies: `__main__, cv2, numpy`. Risks: Context schema and image dtype must be verified in an isolated project.
+```python
+def main(context):
+    detections = context.get("detectedRectangles", [])
+    context["has_candidates"] = isinstance(detections, list) and bool(detections)
+```
 
-### CUT_ON_DETECTED [curated-script-cut-on-detected]
+Route later work with a native Filter/Conditional Gate over `has_candidates`. Document who creates/resets the flag; Context is per evaluation.
 
-Crop an image around detected rectangles. Flow: Code module; confirm ordering from required context reads and writes. Reads: `detectedRectangles, image`. Writes: `exit, image, image_original`. Dependencies: `cv2, numpy, skimage`. Risks: Context schema and image dtype must be verified in an isolated project.
+## GlobalData within one PEKAT 4 project
 
-### DEL_CLASS [curated-script-del-class]
+```python
+def main(context):
+    global_data = context.get("globalData")
+    if not isinstance(global_data, dict):
+        context["code_error"] = "globalData unavailable"
+        return
+    global_data["accepted_count"] = int(global_data.get("accepted_count", 0)) + 1
+```
 
-Filter detections by class. Flow: Code module; confirm ordering from required context reads and writes. Reads: `none detected`. Writes: `detectedRectangles, heatmaps, rectangles_mode, rectangles_remaining, rectangles_removed`. Dependencies: `typing`. Risks: Context schema and image dtype must be verified in an isolated project.
+Use only for 4.x where the exact contract is confirmed. It is not Cross-PEKAT. Define initialization and reset; restart/concurrent-write behavior remains an acceptance gate.
 
-### FLOW_ON_DETECTED [curated-script-flow-on-detected]
+## Filter detections defensively
 
-Select flow routing from detections. Flow: Code module; confirm ordering from required context reads and writes. Reads: `none detected`. Writes: `exit`. Dependencies: `runtime only`. Risks: Context schema and image dtype must be verified in an isolated project.
+```python
+def main(context):
+    detections = context.get("detectedRectangles")
+    if not isinstance(detections, list):
+        context["code_error"] = "detectedRectangles is not a list"
+        return
+    kept = []
+    for item in detections:
+        if not isinstance(item, dict):
+            continue
+        try:
+            confidence = float(item.get("confidence", 0))
+        except (TypeError, ValueError):
+            continue
+        if confidence >= 0.8:
+            kept.append(item)
+    context["detectedRectangles"] = kept
+```
 
-### LOGO_DATE_TIME_TO_IMAGE [curated-script-logo-date-time-to-image]
+Confirm producer-specific keys and whether changing detections should also change `result`; do not couple them accidentally.
 
-Overlay logo/date/time information. Flow: Code module; confirm ordering from required context reads and writes. Reads: `none detected`. Writes: `image, overlay_info`. Dependencies: `__main__, cv2, datetime, numpy`. Risks: Context schema and image dtype must be verified in an isolated project.
+## Result handling
 
-### MEASURE_DETECTED_DISTANCE [curated-script-measure-detected-distance]
+Diagnostic capture without mutation:
 
-Measure distances between detections. Flow: Code module; confirm ordering from required context reads and writes. Reads: `measurement`. Writes: `distance_mm, distance_px, image, label_measurement, measurement, result, signed_distance_mm, signed_distance_px`. Dependencies: `__main__, cv2`. Risks: Changes context['result']; place deliberately in the flow.
+```python
+def main(context):
+    value = context.get("result")
+    context["result_state"] = "OK" if value is True else "NOK" if value is False else "UNSET"
+```
 
-### OVLADANI_MAJAKU_IFMDV2131 [curated-script-ovladani-majaku-ifmdv2131]
+Only if the explicit business rule owns final result:
 
-Control an IFM DV2131 signal light through an IO-Link master. Flow: Code module; confirm ordering from required context reads and writes. Reads: `result`. Writes: `none detected`. Dependencies: `requests`. Risks: Original contained a private IP; curated variant uses TEST-NET 192.0.2.10. Network/device operations require timeout, error handling, dry-run and operator approval.
+```python
+def main(context):
+    context["result"] = context.get("required_feature_count") == 1
+```
 
-### PYZBAR_BARCODE_READER [curated-script-pyzbar-barcode-reader]
+Place result ownership and any Gate/Parallelism merge behavior in the FLOW contract.
 
-Read barcodes; legacy pyzbar example, prefer zxing-cpp where available. Flow: Code module; confirm ordering from required context reads and writes. Reads: `barcode, barcode_debug, image`. Writes: `barcode, barcode_debug`. Dependencies: `cv2, datetime, numpy, os, pyzbar.pyzbar, time`. Risks: pyzbar may require an external native ZBar DLL; prefer the runtime-matched zxing-cpp wheel.
+## Simple image operation
 
-### RESULT_FILTER [curated-script-result-filter]
+```python
+def main(context):
+    image = context.get("image")
+    if image is None or not hasattr(image, "copy"):
+        context["code_error"] = "missing image"
+        return
+    context["image"] = image.copy()
+    context["code_status"] = "image copied"
+```
 
-Filter or aggregate result state. Flow: Code module; confirm ordering from required context reads and writes. Reads: `none detected`. Writes: `false_counter, final_result, result, true_counter`. Dependencies: `__main__`. Risks: Changes context['result']; place deliberately in the flow.
+This preserves dtype/shape. Add an actual transform only after confirming channel count, dtype/range and whether a native PEKAT tool already provides it.
 
-### RESULT_MAKER [curated-script-result-maker]
+## Explicit image save side effect
 
-Set result state from context conditions. Flow: Code module; confirm ordering from required context reads and writes. Reads: `none detected`. Writes: `result`. Dependencies: `runtime only`. Risks: Changes context['result']; place deliberately in the flow.
+```python
+from pathlib import Path
+import cv2
 
-### ROZSIRENI_SNIMKU_OKRAJE [curated-script-rozsireni-snimku-okraje]
 
-Pad image borders. Flow: Code module; confirm ordering from required context reads and writes. Reads: `none detected`. Writes: `image, label_border_error, label_image_size`. Dependencies: `cv2, numpy`. Risks: Context schema and image dtype must be verified in an isolated project.
+def main(context, form):
+    values = form if isinstance(form, dict) else {}
+    output_dir = values.get("output_dir")
+    image = context.get("image")
+    if not output_dir or image is None:
+        context["save_status"] = "not configured"
+        return
+    destination = Path(str(output_dir)) / "inspection.png"
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if not cv2.imwrite(str(destination), image):
+        context["save_status"] = "write failed"
+        return
+    context["save_status"] = "written"
+```
 
-### SAVE_IMAGE_OKNOK_SIMPLE [curated-script-save-image-oknok-simple]
+Use only when a filesystem write is requested and authorized. Replace the naming/collision/retention policy for the real application; do not embed a customer path. Prefer native Image Saver when it meets the need.
 
-Save images according to OK/NOK result. Flow: Code module; confirm ordering from required context reads and writes. Reads: `detectedRectangles, image, result`. Writes: `none detected`. Dependencies: `cv2, datetime, numpy, os, time`. Risks: Context schema and image dtype must be verified in an isolated project.
+## Form normalization
 
-### SAVE_IMAGE_W_ANOT_OKNOK [curated-script-save-image-w-anot-oknok]
+Copy only the required helper from `scripts/form_normalization.py`:
 
-Save annotated OK/NOK images. Flow: Code module; confirm ordering from required context reads and writes. Reads: `detectedRectangles, image, result`. Writes: `none detected`. Dependencies: `cv2, datetime, numpy, os, time`. Risks: Context schema and image dtype must be verified in an isolated project.
+```python
+def main(context, form):
+    values = form if isinstance(form, dict) else {}
+    try:
+        raw = values.get("threshold", 12)
+        if isinstance(raw, bool):
+            raise ValueError
+        threshold = float(raw)
+        if not 0 <= threshold <= 255:
+            raise ValueError
+    except (TypeError, ValueError):
+        context["code_error"] = "threshold outside 0..255"
+        return
+    context["threshold_used"] = threshold
+```
 
-### SJEDNOCENI_2_UNIFIER [curated-script-sjednoceni-2-unifier]
+PEKAT 4.0.1 number defaults may be strings and edited values integers; select defaults may be index strings and edited values text.
 
-Unify two processing branches. Flow: Code module; confirm ordering from required context reads and writes. Reads: `none detected`. Writes: `image`. Dependencies: `cv2, math, numpy`. Risks: Context schema and image dtype must be verified in an isolated project.
+## Cross-PEKAT state
 
-### SOBEL_IMAGE_FILTER [curated-script-sobel-image-filter]
+Use the exact installed-version `pekat_communication.PEKAT` contract. Keep client registration/remote update in a bounded adapter, expose connection/freshness state, and render it as a dependency outside local FLOW. Do not fabricate API arguments from a historical script and do not substitute local GlobalData.
 
-Apply a Sobel image filter. Flow: Code module; confirm ordering from required context reads and writes. Reads: `image`. Writes: `image`. Dependencies: `cv2, numpy`. Risks: Context schema and image dtype must be verified in an isolated project.
+## IFM read/write pointer
 
-### STOP_IF_NOK [curated-script-stop-if-nok]
+For PEKAT Code, first discover the AL13xx master/port/device identity and preserve raw PDIn plus quality. Decode only from the exact IODD. Default writes to locked/dry-run and route detailed AL1304/AL1306, O1D110, DV2131, OPD101, PDOut/ISDU work to `ifm-io-link` when available. See `industrial-hardware.md`.
 
-Stop/reroute when result is NOK. Flow: Code module; confirm ordering from required context reads and writes. Reads: `none detected`. Writes: `exit`. Dependencies: `runtime only`. Risks: Context schema and image dtype must be verified in an isolated project.
+## Historical anti-patterns
 
-### STOP_IF_OK [curated-script-stop-if-ok]
+Do not use historical owner scripts as defaults when they contain process-global `__main__` state, hard-coded paths/endpoints, unbounded I/O, direct detection `[0]`, direct `form[...]`, mixed `operatorInput`/Form, hidden writes, or implicit result changes. Extract only the smallest validated behavior required by the current FLOW.
 
-Stop/reroute when result is OK. Flow: Code module; confirm ordering from required context reads and writes. Reads: `none detected`. Writes: `exit`. Dependencies: `runtime only`. Risks: Context schema and image dtype must be verified in an isolated project.
-
-### UNSHARP_LAPLAC [curated-script-unsharp-laplac]
-
-Apply Laplacian/unsharp enhancement. Flow: Code module; confirm ordering from required context reads and writes. Reads: `none detected`. Writes: `image`. Dependencies: `cv2, numpy`. Risks: Context schema and image dtype must be verified in an isolated project.
-
-### VAIT_FOR_BUTTON [curated-script-vait-for-button]
-
-Wait for a device/button state with bounded polling. Flow: Code module; confirm ordering from required context reads and writes. Reads: `none detected`. Writes: `exit`. Dependencies: `requests`. Risks: Original contained a private IP; curated variant uses TEST-NET 192.0.2.10. Network/device operations require timeout, error handling, dry-run and operator approval.
-
-### ZASTAVENI_VETVE [curated-script-zastaveni-vetve]
-
-Stop a flow branch. Flow: Code module; confirm ordering from required context reads and writes. Reads: `none detected`. Writes: `exit`. Dependencies: `runtime only`. Risks: Context schema and image dtype must be verified in an isolated project.
+Legacy catalog IDs retained for regression routing: `03_script_cookbook_module_schema`, `curated-script-pyzbar-barcode-reader`.

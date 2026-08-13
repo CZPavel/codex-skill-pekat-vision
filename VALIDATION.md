@@ -1,56 +1,48 @@
 # Validation record
 
-Date: 2026-07-14
-Target: PEKAT Vision Codex Skill v2.0.0
-Pre-publication status: **PASS**
+Date: 2026-08-13
+Target: current PEKAT Vision Codex Skill update
+Status: **PASS for static/offline scope**
 
-## Automated validation
+## Regression baseline
+
+- Existing baseline before this update: `21 passed` on Python 3.11.
+- Existing functional tests were retained.
+- New coverage targets version-aware entrypoints, Form normalization, safe Pickle rejection, recursive `modules.sort` including an empty branch, module states, Filter/Gate extraction, Code dependencies/side effects, ZIP input and separate `database_old` diff.
+
+## Current automated validation
 
 - [x] Official `quick_validate.py`: `Skill is valid!`
-- [x] Python 3.11: `21 passed`
-- [x] Python 3.13: `21 passed`
-- [x] All canonical Python scripts compile with `compileall`.
-- [x] The ModuleSpec suite covers both versions/extensions, four form types, value normalization, unknown `formValues`, unique IDs, and AST entrypoint validation.
-- [x] Both export fixtures validate against `references/module_spec.schema.json`.
-- [x] Context tests confirm the diagnostic template does not mutate `result`.
-- [x] REST mocks cover success, timeout, HTTP error, invalid JSON, and an unavailable endpoint.
+- [x] Python 3.11: `37 passed`
+- [x] Python 3.13: `37 passed`
+- [x] Canonical Python scripts compile.
+- [x] ModuleSpec covers 3.19.3/4.0.1 extensions, entrypoint routing, four Form types, default/current-value handling, unique IDs and AST validation.
+- [x] Existing REST mocks cover success, timeout, HTTP error, invalid JSON and unavailable endpoint.
+- [x] FLOW analyzer uses no `pickle.load(s)`, rejects dangerous construction/execution opcodes, and runs on synthetic sanitized directory/ZIP fixtures.
 - [x] Industrial helpers remain dry-run/read-only unless mutation is explicitly approved.
-- [x] The security test rejects private IPv4 addresses, unsafe TLS, unexpected resource types, and legacy `module_item` in Python.
-- [x] The fixture set contains exactly 48 golden cases, including version mixing, invented IODD maps, and production-write requests.
+- [x] The 48-case golden routing fixture and bundle security scan remain passing.
 
-## Read-only runtime fingerprint
+## Behavior smoke coverage
 
-The filesystem-only probe found both supported local installations without starting or modifying PEKAT:
+The updated skill/router and references explicitly cover the requested behaviors: 3.19.3 branch stop; 4.0.1 Form threshold/PTool; database ZIP FLOW; inactive versus soft-deleted; same-project GlobalData; external image SDK/REST; Cross-PEKAT; O1D110/AL1306 routing; Basler routing; and vision-first FOV/lighting design.
 
-| PEKAT | Architecture | Python ABI |
-|---|---|---|
-| 3.19.3 | AMD64 | `cp310` |
-| 4.0.1 | AMD64 | `cp312` |
+Two clean `codex exec --ephemeral --sandbox read-only` sessions loaded the installed skill and passed representative prompts:
 
-The exact local package inventory is intentionally not committed; the probe can reproduce it with:
+1. 3.19.3 `Still_OK` branch stop returned minimal Code and the correct signature evidence boundary.
+2. A synthetic sanitized project ZIP was analyzed through the installed safe utility; recursive Parallelism/empty branch, active/disabled/soft-deleted state, Context Gate, Code dependencies and `database_old` diff were reported correctly without writes.
 
-```powershell
-python .github/skills/pekat-vision/scripts/runtime_fingerprint.py
-```
+Codex emitted unrelated local warnings about another installed skill's YAML and a missing MCP program during shutdown; neither affected PEKAT skill discovery or the requested outputs.
 
-## Packaging gates
-
-- [x] `.github/skills/pekat-vision` is the only canonical skill tree.
-- [x] No root-level copies of domain scripts or references remain.
-- [x] The skill tree contains no raw PDF, Confluence body, cache, venv, credential, private endpoint, or real project data.
-- [x] Network and device tests are mocked and perform no writes.
-- [x] GitHub Actions passes on the release PR for Python 3.11 and 3.13.
-- [x] The release branch installs and validates through Skill Installer; all 17 canonical files match the published commit's Git blob IDs.
-- [x] Tag `v2.0.0` installs, validates, and matches all 17 files in the release ZIP.
-
-Published release evidence:
-
-- Tag target: `adefc300218e4652f1ed82930bff648ceff3e91f`
-- Release ZIP SHA256: `32bf7982e9559200a6da9a6a35351f2b64844503269fa4c9ef4b8bbc481fe39f`
-- Release: <https://github.com/CZPavel/codex-skill-pekat-vision/releases/tag/v2.0.0>
-
-All publication gates passed. The locally installed skill was validated after replacement; its 17 file hashes match the release archive.
+This is a static content/routing review plus executable utility tests and two clean read-only Codex smoke sessions. It is not PEKAT runtime/UI proof.
 
 ## Manual acceptance boundary
 
-Import/display/edit/export round-trip of both fixtures remains a manual acceptance test in new isolated PEKAT 3.19.3 and 4.0.1 projects. Existing projects and running flows must not be used.
+The following remain OPEN unless performed separately on an isolated exact-version target:
+
+- PEKAT UI import/display/edit/run/export/reimport;
+- live REST and SDK exchange;
+- Projects Manager and Cross-PEKAT failure/reconnect behavior;
+- camera, IO-Link/PLC and physical vision-system acceptance;
+- direct project DB modification (not implemented as a general feature).
+
+Automated tests never start/stop PEKAT, mutate a project, or write to industrial hardware.

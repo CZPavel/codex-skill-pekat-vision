@@ -25,5 +25,5 @@ def test_form_entrypoint_crops_without_changing_result():
 
 def test_missing_inputs_are_diagnostic_only():
     context = {"result": False}
-    main(context)
+    main(context, {})
     assert context == {"result": False, "code_template_status": "rectangle_not_found"}
