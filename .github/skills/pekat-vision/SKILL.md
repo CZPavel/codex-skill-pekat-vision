@@ -10,7 +10,7 @@ description: Version-aware PEKAT VISION 3.18.x, 3.19.3, and 4.0.1 work for Code,
 3. Choose the simplest working route: native PEKAT feature, simple FLOW, NumPy/OpenCV Code, specialized library, then heavy ML/new dependency only when justified.
 4. State the evidence class for consequential claims: documented, runtime/UI tested, observed/static, practical evidence, or unknown/open gate.
 5. Read only the relevant reference:
-   - Version, Context, `result`/`exit`, GlobalData, migration: `references/version-context.md`
+   - Version, Context, Parallelism data layers, `result`/`exit`, GlobalData, migration: `references/version-context.md`
    - `.pmodule`, `.ptool`, Form runtime and generation: `references/module-format.md`
    - FLOW, `modules.db`, `modules.sort`, `database_old`: `references/flow-database-projects.md`
    - Project metadata/runtime/anatomy and `running.db` boundary: `references/project-diagnostics.md`
@@ -29,8 +29,12 @@ description: Version-aware PEKAT VISION 3.18.x, 3.19.3, and 4.0.1 work for Code,
 - Do not invent one universal `main(...)` signature. For 4.0.1 use runtime-tested `main(context)` without Form and `main(context, form)` with Form. For 3.19.3, `main(context)` is a safe current no-Form pattern, while a fresh UI record also stored `main(context, form)` with an empty Form; runtime round-trip remains open. Treat 3.18 signatures/export schema as version-specific/open.
 - Keep generated Code short: no `__main__` persistence, infinite loops, customer paths/IPs, unnecessary classes, or hidden side effects.
 - Preserve standard Context types. Change `result` only when requested; set `exit=True` only for deliberate termination of the current branch. Form is not `operatorInput`.
-- In PEKAT 4.0.1 sequential FLOW, `context["image"] = output` may replace the image with a new NumPy ndarray and a different shape; validate dtype/channels and every downstream consumer. Parallel branch merge/copy behavior remains open.
+- In PEKAT 4.0.1 sequential FLOW, `context["image"] = output` may replace the image with a new NumPy ndarray and a different shape; validate dtype/channels and every downstream consumer. Do not infer a universal parallel image-winner or geometry-remap contract.
+- In experimentally tested PEKAT 4.0.1, custom Context propagates sequentially but branch changes do not survive a true multi-branch join, including equal-value writes. Do not invent first/last-writer, union, or consensus merge. A mutually exclusive Conditional Gate router with exactly one continuing branch may propagate that branch's custom Context; zero surviving branches remain open.
+- Keep three layers separate: custom `context["X"]`, PEKAT-native `result`/detections/classes/heatmaps, and raster `context["image"]`. Prefer native `result` for parallel OK/NOK. Native overlays are not automatically drawn into image pixels.
+- Do not remove an empty branch by default: it may pass the original/pre-transform image to UI or Image Saver while detector branches crop/preprocess. It also contributes to true multi-branch custom-Context semantics. Gate FALSE and a disabled/no-op branch are not equivalent to empty.
 - Use GlobalData only as the version-scoped PEKAT 4 project state contract. Use Context for one evaluation and Cross-PEKAT/REST/SDK for project boundaries.
+- Do not use GlobalData as an automatic parallel merge workaround; concurrent-write, collision and winner/order semantics remain open.
 - Normalize Form number/select values when type affects logic. Keep `defaultValue` distinct from saved current `formValues`.
 - Use `scripts/generate_code_module.py` for 3.19.3 `.pmodule` or 4.0.1 `.ptool`. Do not generate a 3.18 export without exact evidence.
 - For a new 4.0.1 unconditional Form field, preserve native serialization `"visibility": ""`; never emit a boolean. Generated PTool import/open/run is runtime/UI verified for one Code/Form use case, while its subsequent reexport/reimport remains open.

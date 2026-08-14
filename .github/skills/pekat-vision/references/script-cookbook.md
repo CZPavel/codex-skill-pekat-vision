@@ -46,6 +46,8 @@ def main(context):
 
 Route later work with a native Filter/Conditional Gate over `has_candidates`. Document who creates/resets the flag; Context is per evaluation.
 
+In PEKAT 4.0.1, this custom flag is safe for downstream sequential steps. Do not expect a branch-local flag to survive a true multi-branch Parallelism join. For mutually exclusive routing, place the Conditional Gate before branch work and ensure exactly one branch continues. For parallel inspection OK/NOK, prefer native `result` rather than custom A/B booleans.
+
 ## GlobalData within one PEKAT 4 project
 
 ```python
@@ -57,7 +59,7 @@ def main(context):
     global_data["accepted_count"] = int(global_data.get("accepted_count", 0)) + 1
 ```
 
-Use only for 4.x where the exact contract is confirmed. It is not Cross-PEKAT. Define initialization and reset; restart/concurrent-write behavior remains an acceptance gate.
+Use only for 4.x where the exact contract is confirmed. It is not Cross-PEKAT. Define initialization and reset; restart/concurrent-write/collision ordering remains an acceptance gate. Do not use GlobalData automatically to work around custom Context behavior at a parallel join.
 
 ## Filter detections defensively
 
@@ -132,9 +134,13 @@ def main(context):
     context["image_shape"] = tuple(output.shape)
 ```
 
-Confirm dtype/channel contract and every downstream consumer. This evidence is
-sequential only; it does not resolve Parallelism merge/copy semantics. Prefer a
-native PEKAT operation when it already provides the required transform.
+Confirm dtype/channel contract and every downstream consumer. This changed-shape
+evidence is sequential. In Parallelism, an empty branch may intentionally preserve
+the original/pre-transform raster while other branches crop or preprocess for
+native detection. Native boxes/heatmaps remain overlays unless Code explicitly
+draws them into pixels. Prefer a native PEKAT operation when it already provides
+the required transform; verify coordinates after rotation, Unifier, custom resize
+or warp.
 
 ## Explicit image save side effect
 

@@ -32,9 +32,9 @@ Context moves through active FLOW steps for the current evaluation. Validate pre
 
 | Key | Safe contract and boundary |
 |---|---|
-| `image` | NumPy-like image; dtype, channels and shape are provider/tool-specific. In a PEKAT 4.0.1 sequential FLOW test, assigning a new ndarray changed `(864, 1184, 3)` to `(432, 592, 3)` and the next Code tool received the new shape (E). Validate downstream tools; parallel merge/copy remains open. |
-| `detectedRectangles` | Sequence of detections; fields vary by producer. Check type/length/keys before access. |
-| `heatmaps` | Tool-produced heatmap sequence; exact shape/content is tool-specific. |
+| `image` | NumPy-like raster; dtype, channels and shape are provider/tool-specific. In a PEKAT 4.0.1 sequential FLOW test, assigning a new ndarray changed `(864, 1184, 3)` to `(432, 592, 3)` and the next Code tool received the new shape (E). Validate downstream tools and do not infer a universal parallel image winner. |
+| `detectedRectangles` | Native detection metadata; fields vary by producer. Check type/length/keys before access. PEKAT may display it as an overlay without drawing it into `image` pixels. |
+| `heatmaps` | Native tool-produced visualization data; exact shape/content is tool-specific and separate from the image raster. |
 | `result` | `True` OK, `False` NOK; `None` was observed before a result-producing step in 4.0.1. Do not mutate for diagnostics. |
 | `exit` | Boolean deliberate termination of the current branch; other Parallelism branches continue. |
 | `data` | Provider/request-specific internal data. A Folder filename/path is only practical evidence; diagnostics may read it, but do not write or generalize it. |
@@ -43,7 +43,50 @@ Context moves through active FLOW steps for the current evaluation. Validate pre
 | `completeTime` | Processing time in seconds; do not assume when it becomes final without an exact test. |
 | `stdout` / `stderr` | Inspection-captured Code output observed in 4.0.1. Prefer a small diagnostic key over excessive prints. |
 
-Custom Context keys are appropriate between sequential tools in one evaluation. Define owner, type, optionality, and reset behavior. Custom mutable Context merge semantics across Parallelism branches remain open.
+Custom Context keys are appropriate between sequential tools in one evaluation. Define owner, type, optionality, and reset behavior. In controlled PEKAT 4.0.1 tests, new keys, scalar changes, delete/replacement and nested/in-place dict/list mutations propagated sequentially. A changed Python `id()` did not mean the value failed to propagate.
+
+## PEKAT 4.0.1 Parallelism contract
+
+Experimentally verified for the tested 4.0.1 scenarios:
+
+- At a true join of multiple continuing branches, custom branch changes did not survive. Unique keys, differing writes and equal values in both branches all returned to the pre-parallel custom state; timing and physical branch order did not create first/last-writer behavior.
+- With mutually exclusive Conditional Gates and exactly one continuing branch, that branch's custom Context could continue after Parallelism. Gate FALSE is not the same as an empty branch.
+- An empty branch can be useful as original/pre-transform image pass-through, but it also contributes to true multi-branch custom-Context behavior. A disabled/no-op Code branch is not equivalent to Gate FALSE and may act as pass-through; treat its exact mechanism as observation/inference, not a vendor implementation contract.
+- Native `result`, detections/classes and heatmaps have separate PEKAT result/visualization semantics. Prefer native `result` for parallel OK/NOK; do not generalize custom-Context loss to native results.
+- Native bounding boxes/heatmaps are overlays/metadata, not automatically rasterized pixels. Standard crop coordinate handling was practically observed; rotation, Unifier, manual/custom resize and warp require overlay verification or explicit coordinate transformation.
+- GlobalData concurrent writes, collisions and winner/order are open. Persistence makes it unsuitable as an automatic branch-merge workaround.
+
+Machine-readable decision contract:
+
+```yaml
+pekat_4_0_1_parallelism_contract:
+  custom_context:
+    sequential_propagation: runtime_verified
+    true_multi_branch_join: branch_changes_not_propagated
+    equal_values_consensus_merge: false
+    first_or_last_writer: false
+    single_surviving_conditional_gate_branch: propagation_runtime_verified
+  branches:
+    conditional_gate_false_equals_empty: false
+    empty_can_pass_original_image: true
+    empty_contributes_to_custom_multi_branch_join: true
+    disabled_noop_equals_gate_false: false
+  native_results:
+    use_result_for_parallel_ok_nok: true
+    detections_classes_heatmaps_are_custom_context: false
+  image:
+    native_overlay_automatically_rasterized: false
+    standard_crop_mapping: practical_observation
+    arbitrary_transform_mapping: verify_or_transform_coordinates
+  globaldata:
+    concurrent_write_semantics: open
+    automatic_parallel_merge_workaround: false
+  open:
+    - zero_surviving_gate_branches
+    - branch_local_a1_to_a2
+    - generalized_native_result_merge
+    - arbitrary_geometry_remap
+```
 
 ## State selection
 
@@ -80,6 +123,6 @@ Migration procedure:
 5. Compare FLOW topology and record-level changes separately.
 6. Validate only in a new isolated project; record UI/runtime gates honestly.
 
-Known gates: clean 3.18 DB/export fixture, 3.19.3 Form runtime/round-trip, 4.0.1 generated PTool reexport/reimport, Folder `data`, GlobalData restart/concurrency, and custom Context branch merge.
+Known gates: clean 3.18 DB/export fixture, 3.19.3 Form runtime/round-trip, 4.0.1 generated PTool reexport/reimport, Folder `data`, GlobalData restart/concurrency, zero-surviving Gate branches, branch-local A1→A2, generalized native-result merge, and arbitrary geometry remap.
 
 Legacy public evidence IDs retained for regression routing: `pekat-kb-4-0-1-page-1513132787`, `local-runtime-fingerprint-2026`.

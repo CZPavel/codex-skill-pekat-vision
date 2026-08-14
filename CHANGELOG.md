@@ -2,6 +2,8 @@
 
 ## Unreleased - 2026-08-14
 
+- Added a three-layer PEKAT 4.0.1 Parallelism contract that separates custom Context, native result/overlay data, and the raster image.
+- Added mutually exclusive Conditional Gate routing, empty original-image pass-through, bounded geometry guidance, GlobalData concurrency gates, and machine-readable semantic regressions.
 - Added PEKAT 4.0.1 sequential image-replacement/changed-shape evidence and bounded OpenCV performance guidance.
 - Closed the tested generated PTool import/open/run gate, retained reexport/reimport as open, and enforced native string `visibility: ""` with regression coverage.
 - Added PEKAT 4.0.1 Code runtime libraries, package compatibility, project/log diagnostics, and expanded communication routing.
@@ -12,7 +14,7 @@
 - Replaced the historical script catalog with small native-first recipes and a simplicity/complexity gate.
 - Clarified REST/SDK/Projects Manager/Cross-PEKAT responsibilities and conditional reliability behavior.
 - Added PEKAT-specific hardware routing plus vision-design feasibility guidance.
-- Expanded regression coverage from 21 to 47 tests.
+- Expanded regression coverage to 55 tests.
 
 ## 2.0.0 - 2026-07-14
 

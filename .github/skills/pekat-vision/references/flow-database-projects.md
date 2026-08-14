@@ -97,6 +97,29 @@ Missing `isActive` is not `False`; some observed live model records omit it. A s
 - Top-level `modules.filter` is not the list of Conditional Gate nodes.
 - Report rule structure, `evalType`, and Context/GlobalData path without inventing missing semantics.
 
+## Parallelism runtime design in PEKAT 4.0.1
+
+Do not treat all branch data as one generic Context merge. In controlled tests, custom branch `context["X"]` changes did not propagate through a true multi-branch join, including equal-value writes. Do not propose first/last-writer, union, consensus, timing or branch-position logic.
+
+For mutually exclusive routing, prefer Conditional Gates whose conditions ensure exactly one branch continues for a frame. That surviving branch may propagate custom Context. Gate FALSE is not equivalent to an empty branch; behavior with no surviving branches remains open.
+
+An empty branch is not automatically redundant:
+
+```text
+Parallelism
+  EMPTY                              -> original/full image
+  crop/preprocess -> detector A      -> native detections
+  crop/preprocess -> detector B      -> native detections/result
+JOIN
+  original/full image + native overlays/result -> UI or Image Saver
+```
+
+This is a practical original-image pass-through pattern. It also creates a true multi-branch join for custom Context, so branch custom values should not be expected after the join. A disabled/no-op Code branch may similarly contribute an unchanged pass-through state and is not equivalent to Gate FALSE; do not claim its internal mechanism.
+
+Prefer PEKAT-native `result` for parallel OK/NOK and native detections/classes/heatmaps for result visualization. They do not follow the tested custom-Context rule. Bounding boxes/heatmaps are overlay metadata, not automatically drawn into the raster. Standard crop mapping was practically observed; verify or explicitly transform coordinates after rotation, Unifier, custom resize or warp.
+
+Do not replace this simple topology with a GlobalData state machine merely to merge branches. Concurrent GlobalData write/collision/winner semantics are unverified and persistent values can become stale.
+
 ## Static Code inventory
 
 For each CODE record, parse but never run `sourceCode`. Inventory:
@@ -138,4 +161,4 @@ Priority order:
 
 Do not create a universal Pickle writer. Before any DB mutation require a copy, version/schema evidence, deterministic diff, isolated import/open test, rollback, and explicit approval.
 
-Known gates: clean 3.18 fixture, full type-specific schema across releases, custom Context merge, concurrent GlobalData writes, every upgrade route, and universal DB generation.
+Known gates: clean 3.18 fixture, full type-specific schema across releases, zero-surviving Gate branches, branch-local A1→A2 custom propagation, generalized native-result merge, concurrent GlobalData writes, arbitrary geometry remap, every upgrade route, and universal DB generation.

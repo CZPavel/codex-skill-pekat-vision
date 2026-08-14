@@ -7,6 +7,7 @@ Public, version-aware Codex skill for PEKAT VISION 3.18.x, 3.19.3 and 4.0.1. The
 - Generate and validate Code plus 3.19.3 `.pmodule` / 4.0.1 `.ptool` exports while keeping 3.18 export gates explicit.
 - Route exact `main(...)` signatures, Context, `result`/`exit`, Form runtime values and PEKAT 4 GlobalData.
 - Generate native-compatible PEKAT 4.0.1 Form metadata and route verified sequential `context["image"]` replacement with changed resolution.
+- Route PEKAT 4.0.1 sequential versus true multi-branch custom Context, mutually exclusive Conditional Gates, native result/overlay behavior, empty original-image pass-through, and scoped GlobalData/geometry gates.
 - Safely analyze a PEKAT project/database directory or ZIP: restricted non-executing protocol-4 Pickle reader, recursive `modules.sort`/Parallelism, active/disabled/soft-deleted state, Filter/Gate rules, Code dependencies/side effects, and separate `database_old` migration diff.
 - Analyze `output.log` families and project metadata/runtime state without treating `running.db` as process liveness.
 - Route the directly tested PEKAT 4.0.1 Code library matrix, `cp312`/`win_amd64` wheel compatibility, and evidence-backed third-party library staging/acceptance.
@@ -58,6 +59,7 @@ Automated validation never starts PEKAT or writes to a project, PLC, IO-Link dev
 - 4.0.1 generated `.ptool` import/open/run is complete for the tested Code/Form use case; its reexport/reimport into a second clean project remains open;
 - universal PEKAT DB writer (intentionally not implemented);
 - live REST/SDK/Projects Manager/Cross-PEKAT regression on current installs;
+- PEKAT 4.0.1 zero-surviving Gate behavior, branch-local A1→A2 propagation, generalized native-result merge, concurrent GlobalData writes, and arbitrary geometry remapping;
 - exact physical camera/IO-Link/vision acceptance.
 
 Static/schema/AST tests are not described as PEKAT runtime or UI proof.
