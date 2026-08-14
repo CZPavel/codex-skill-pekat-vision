@@ -205,6 +205,10 @@ class ModuleSpec:
         keys = [item.formKey for item in self.form]
         if len(keys) != len(set(keys)):
             raise ModuleSpecError("formKey values must be unique")
+        if self.target_version == "4.0.1" and any(item.visibility != "" for item in self.form):
+            raise ModuleSpecError(
+                "PEKAT 4.0.1 unconditional form.visibility must be the native-compatible empty string"
+            )
         unknown = sorted(set(self.form_values) - set(keys))
         if unknown:
             raise ModuleSpecError(f"form_values contains unknown keys: {unknown}")

@@ -17,7 +17,7 @@ Prefer current exact-version runtime/export evidence, then exact-version documen
 | FLOW unit | module (D) | module (D) | tool (D) |
 | No-Form Code | `main(context)` exists; documentation also contains inconsistent legacy signatures (D) | `main(context)` is a safe current pattern; fresh UI DB also stored `main(context, form)` with `form=[]` (D/S, runtime variant open) | `main(context)` runtime tested (E) |
 | Form Code | exact current Form/export contract open | `main(context, form)` in documentation and real exports; exact runtime matrix open (D/R) | `main(context, form)` runtime tested (E) |
-| Export | exact schema/extension open | `.pmodule`, root `type/module/version` observed (R) | `.ptool`, root `type/module/version`, create/edit/run/export tested (R/E); import/reimport open |
+| Export | exact schema/extension open | `.pmodule`, root `type/module/version` observed (R) | `.ptool`, root `type/module/version`, create/edit/run/export and one externally generated import/open/run tested (R/E); reexport/reimport of that generated PTool open |
 | GlobalData | not established | Inspection may show `globalData: null`; do not claim API/persistence | `context["globalData"]` is a dict shared by Code tools and persisted between evaluations while the project ran (E); restart/concurrent-write semantics open |
 | DB topology | exact disk schema open | protocol-4 `modules.db`/`sort` contract observed (S/E) | same topology grammar observed; record fields are migration/lineage-aware (S/E) |
 | Audited Windows ABI | unknown | `cp310` on one PC | direct Code test: CPython 3.12.12, `cp312`, AMD64 on one installation |
@@ -32,7 +32,7 @@ Context moves through active FLOW steps for the current evaluation. Validate pre
 
 | Key | Safe contract and boundary |
 |---|---|
-| `image` | NumPy-like image; dtype, channels and shape are provider/tool-specific. Preserve valid type/shape semantics. |
+| `image` | NumPy-like image; dtype, channels and shape are provider/tool-specific. In a PEKAT 4.0.1 sequential FLOW test, assigning a new ndarray changed `(864, 1184, 3)` to `(432, 592, 3)` and the next Code tool received the new shape (E). Validate downstream tools; parallel merge/copy remains open. |
 | `detectedRectangles` | Sequence of detections; fields vary by producer. Check type/length/keys before access. |
 | `heatmaps` | Tool-produced heatmap sequence; exact shape/content is tool-specific. |
 | `result` | `True` OK, `False` NOK; `None` was observed before a result-producing step in 4.0.1. Do not mutate for diagnostics. |
@@ -80,6 +80,6 @@ Migration procedure:
 5. Compare FLOW topology and record-level changes separately.
 6. Validate only in a new isolated project; record UI/runtime gates honestly.
 
-Known gates: clean 3.18 DB/export fixture, 3.19.3 Form runtime/round-trip, 4.0.1 import/reimport, Folder `data`, GlobalData restart/concurrency, and custom Context branch merge.
+Known gates: clean 3.18 DB/export fixture, 3.19.3 Form runtime/round-trip, 4.0.1 generated PTool reexport/reimport, Folder `data`, GlobalData restart/concurrency, and custom Context branch merge.
 
 Legacy public evidence IDs retained for regression routing: `pekat-kb-4-0-1-page-1513132787`, `local-runtime-fingerprint-2026`.

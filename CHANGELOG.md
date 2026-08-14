@@ -1,7 +1,9 @@
 # Changelog
 
-## Unreleased - 2026-08-13
+## Unreleased - 2026-08-14
 
+- Added PEKAT 4.0.1 sequential image-replacement/changed-shape evidence and bounded OpenCV performance guidance.
+- Closed the tested generated PTool import/open/run gate, retained reexport/reimport as open, and enforced native string `visibility: ""` with regression coverage.
 - Added PEKAT 4.0.1 Code runtime libraries, package compatibility, project/log diagnostics, and expanded communication routing.
 - Added standard-library log and project diagnostic helpers plus a read-only package/wheel compatibility checker.
 - Added 3.18.x routing while keeping its export/database contracts explicitly open.

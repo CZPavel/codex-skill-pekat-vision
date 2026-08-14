@@ -1,11 +1,14 @@
 # Validation record
 
-Date: 2026-08-13
-Target: PEKAT VISION runtime diagnostics and Code tooling update
+Date: 2026-08-14
+Target: PEKAT VISION image replacement and generated PTool runtime-evidence sync
 Status: **PASS for static/offline scope**
 
 ## New scope
 
+- References now record PEKAT 4.0.1 sequential `context["image"]` replacement with changed shape, the bounded OpenCV enhancer timing, and the exact evidence boundary.
+- Generated PTool import/open/run is recorded as runtime/UI verified for the tested Code/Form use case; its subsequent reexport/reimport remains open.
+- The generator, JSON schema, distributed fixture and regressions enforce PEKAT 4.0.1 unconditional Form `visibility` as string `""`, never boolean.
 - References: PEKAT 4.0.1 Code runtime/library matrix, library installation and ABI rules, project log troubleshooting, project diagnostics, and expanded documented communication routing.
 - Helpers: read-only `analyze_pekat_log.py`, `pekat_project_diagnostics.py`, and `check_pekat_library_compat.py`.
 - Tests: synthetic multiline/repeated log families, camera/model/filesystem routing, project metadata/anatomy/log handling, runtime-matrix regression, and wheel ABI/architecture classification.
@@ -17,9 +20,9 @@ The machine-readable matrix records a direct PEKAT VISION 4.0.1 Code test on Win
 ## Current automated validation
 
 - [x] Official `quick_validate.py`: `Skill is valid!`
-- [x] Default Python suite: `47 passed`.
-- [x] Python 3.11 isolated environment: `47 passed`.
-- [x] Python 3.13 isolated environment: `47 passed`.
+- [x] Default Python suite: `49 passed`.
+- [x] Python 3.11 isolated environment: `49 passed`.
+- [x] Python 3.13 isolated environment: `49 passed`.
 - [x] Canonical Python scripts compile.
 - [x] Existing module/export, REST failure-path, Projects Manager and industrial safety regressions remain enabled.
 - [x] FLOW analyzer still uses a restricted non-executing Pickle reader and reuses one parser for project diagnostics.
@@ -29,13 +32,14 @@ The machine-readable matrix records a direct PEKAT VISION 4.0.1 Code test on Win
 
 ## Evidence boundary
 
-The log/project/library helper results above are unit-tested with synthetic local fixtures. They do not install packages, modify PEKAT, write a project database, start training, contact a PLC, or alter a camera. The 4.0.1 runtime matrix is prior direct PEKAT Code evidence; this repository validation does not repeat those PEKAT operations.
+The log/project/library helpers and updated generator are unit-tested with synthetic local fixtures. They do not install packages, modify PEKAT, write a project database, start training, contact a PLC, or alter a camera. The 4.0.1 runtime matrix, sequential image replacement, OpenCV timing and generated PTool import/open/run are prior direct runtime/UI evidence represented by the skill; this repository validation does not repeat those PEKAT operations.
 
 ## Manual acceptance boundary
 
 The following remain OPEN unless performed separately on an isolated exact-version target:
 
-- PEKAT UI import/display/edit/run/export/reimport;
+- reexport of the externally generated/imported PEKAT 4.0.1 PTool and reimport into a second clean project;
+- exact 3.19.3 `.pmodule` and 3.18 export/Form runtime round-trips;
 - live REST and SDK exchange;
 - Projects Manager and Cross-PEKAT lifecycle/failure/reconnect behavior;
 - installing a new package into the embedded server and validating its direct Code import/function;

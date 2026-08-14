@@ -29,9 +29,11 @@ description: Version-aware PEKAT VISION 3.18.x, 3.19.3, and 4.0.1 work for Code,
 - Do not invent one universal `main(...)` signature. For 4.0.1 use runtime-tested `main(context)` without Form and `main(context, form)` with Form. For 3.19.3, `main(context)` is a safe current no-Form pattern, while a fresh UI record also stored `main(context, form)` with an empty Form; runtime round-trip remains open. Treat 3.18 signatures/export schema as version-specific/open.
 - Keep generated Code short: no `__main__` persistence, infinite loops, customer paths/IPs, unnecessary classes, or hidden side effects.
 - Preserve standard Context types. Change `result` only when requested; set `exit=True` only for deliberate termination of the current branch. Form is not `operatorInput`.
+- In PEKAT 4.0.1 sequential FLOW, `context["image"] = output` may replace the image with a new NumPy ndarray and a different shape; validate dtype/channels and every downstream consumer. Parallel branch merge/copy behavior remains open.
 - Use GlobalData only as the version-scoped PEKAT 4 project state contract. Use Context for one evaluation and Cross-PEKAT/REST/SDK for project boundaries.
 - Normalize Form number/select values when type affects logic. Keep `defaultValue` distinct from saved current `formValues`.
 - Use `scripts/generate_code_module.py` for 3.19.3 `.pmodule` or 4.0.1 `.ptool`. Do not generate a 3.18 export without exact evidence.
+- For a new 4.0.1 unconditional Form field, preserve native serialization `"visibility": ""`; never emit a boolean. Generated PTool import/open/run is runtime/UI verified for one Code/Form use case, while its subsequent reexport/reimport remains open.
 - For 4.0.1 dependencies, consult the directly tested library matrix. An export does not package an arbitrary Python dependency; state the required import/version/ABI and retest it in Code on the destination PC.
 
 ## FLOW/database contract
@@ -57,4 +59,4 @@ description: Version-aware PEKAT VISION 3.18.x, 3.19.3, and 4.0.1 work for Code,
 - Code/JSON/Pickle parsing is bounded and tested; no user Code or Pickle callable executes.
 - Context/Form/state and side effects are documented.
 - No credentials, private endpoint, customer identifier, or unsafe write default is present.
-- PEKAT UI import/reimport, live REST/SDK, and physical hardware acceptance remain explicit manual gates unless actually performed.
+- PEKAT 4.0.1 generated PTool reexport/reimport, other exact-version UI gates, live REST/SDK, and physical hardware acceptance remain explicit manual gates unless actually performed.

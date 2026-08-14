@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 import pytest
-from jsonschema import validate as validate_schema
+from jsonschema import ValidationError, validate as validate_schema
 
 from generate_code_module import ModuleSpec, ModuleSpecError
 
@@ -33,6 +33,9 @@ def test_all_forms_version_extension_and_ids(version, extension, tmp_path):
     payload = json.loads(path.read_text(encoding="utf-8"))
     assert payload["version"] == version
     assert {item["type"] for item in payload["module"]["form"]} == {"text", "number", "checkbox", "select"}
+    if version == "4.0.1":
+        assert all(isinstance(item["visibility"], str) for item in payload["module"]["form"])
+        assert all(item["visibility"] == "" for item in payload["module"]["form"])
     number_item = next(item for item in payload["module"]["form"] if item["type"] == "number")
     assert number_item["defaultValue"] == "5"
     assert payload["module"]["formValues"] == {"threshold": 6.5, "enabled": False, "mode": "safe"}
@@ -85,3 +88,40 @@ def test_distributed_fixtures_match_contract():
 def test_modulespec_json_schema_accepts_all_form_types():
     schema_path = Path(__file__).resolve().parents[1] / ".github" / "skills" / "pekat-vision" / "references" / "module_spec.schema.json"
     validate_schema(mapping("4.0.1"), json.loads(schema_path.read_text(encoding="utf-8")))
+
+
+def test_401_visibility_rejects_boolean_and_unknown_expression():
+    boolean_value = mapping("4.0.1")
+    boolean_value["form"][0]["visibility"] = True
+    with pytest.raises(ModuleSpecError, match="visibility must be a string"):
+        ModuleSpec.from_mapping(boolean_value)
+
+    expression_value = mapping("4.0.1")
+    expression_value["form"][0]["visibility"] = "legacy_expression"
+    with pytest.raises(ModuleSpecError, match="native-compatible empty string"):
+        ModuleSpec.from_mapping(expression_value)
+
+    schema_path = Path(__file__).resolve().parents[1] / ".github" / "skills" / "pekat-vision" / "references" / "module_spec.schema.json"
+    with pytest.raises(ValidationError):
+        validate_schema(expression_value, json.loads(schema_path.read_text(encoding="utf-8")))
+
+
+def test_401_distributed_fixture_has_native_form_types_and_valid_source():
+    path = Path(__file__).resolve().parents[1] / ".github" / "skills" / "pekat-vision" / "assets" / "fixtures" / "form_types_4_0_1.ptool"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    module = payload["module"]
+    assert payload["version"] == "4.0.1"
+    assert payload["type"] == "CODE"
+    ast.parse(module["sourceCode"])
+    keys = [item["formKey"] for item in module["form"]]
+    ids = [module["id"], *[item["id"] for item in module["form"]]]
+    assert set(keys) == {"caption", "threshold", "enabled", "mode"}
+    assert len(keys) == len(set(keys))
+    assert len(ids) == len(set(ids))
+    assert all(isinstance(item["visibility"], str) and item["visibility"] == "" for item in module["form"])
+    assert all(not isinstance(item["visibility"], bool) for item in module["form"])
+    number_item = next(item for item in module["form"] if item["type"] == "number")
+    select_item = next(item for item in module["form"] if item["type"] == "select")
+    assert isinstance(number_item["min"], str) and isinstance(number_item["max"], str)
+    assert isinstance(select_item["options"], str)
+    assert set(module["formValues"]) <= set(keys)

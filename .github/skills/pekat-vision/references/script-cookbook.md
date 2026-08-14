@@ -113,7 +113,28 @@ def main(context):
     context["code_status"] = "image copied"
 ```
 
-This preserves dtype/shape. Add an actual transform only after confirming channel count, dtype/range and whether a native PEKAT tool already provides it.
+This preserves dtype/shape. In PEKAT 4.0.1 a direct sequential test also
+confirmed that a new ndarray with a different shape propagates to the next Code
+tool. A bounded resize pattern is therefore valid when the changed resolution
+is intentional:
+
+```python
+import cv2
+
+
+def main(context):
+    image = context.get("image")
+    if image is None or getattr(image, "ndim", 0) not in {2, 3}:
+        context["code_error"] = "invalid image"
+        return
+    output = cv2.resize(image, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
+    context["image"] = output
+    context["image_shape"] = tuple(output.shape)
+```
+
+Confirm dtype/channel contract and every downstream consumer. This evidence is
+sequential only; it does not resolve Parallelism merge/copy semantics. Prefer a
+native PEKAT operation when it already provides the required transform.
 
 ## Explicit image save side effect
 

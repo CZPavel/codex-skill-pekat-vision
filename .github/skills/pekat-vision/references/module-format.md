@@ -6,7 +6,7 @@
 |---|---|---|---|
 | 3.18.x | Do not generate without an exact export/schema | No universal signature: documentation contains `main(context)` and legacy alternatives | Code documented; current Form/export schema open |
 | 3.19.3 | `.pmodule` | Form exports use `main(context, form)`; no-Form `main(context)` is safe, while a fresh UI record also stored two args with empty Form | JSON/export static evidence; exact runtime/round-trip open |
-| 4.0.1 | `.ptool` | `main(context)` without Form; `main(context, form)` with Form | Both signatures and Form runtime tested; create/edit/run/export tested; import/reimport open |
+| 4.0.1 | `.ptool` | `main(context)` without Form; `main(context, form)` with Form | Both signatures and Form runtime tested; create/edit/run/export plus one externally generated import/open/run tested; generated reexport/reimport open |
 
 A module/tool export is one Code step, not a project and not a sandbox. Never rename `.pmodule` to `.ptool` or only edit the root version.
 
@@ -57,6 +57,13 @@ Runtime-tested PEKAT 4.0.1 representations:
 | checkbox | `bool` | `bool` | require bool; explicitly parse known legacy strings only if needed |
 | select | e.g. `"0"` index string | e.g. `"manual"` text | allow valid index or allowlisted text |
 
+For an unconditional PEKAT 4.0.1 Form item, preserve `"visibility": ""` as a
+string. A generated item with boolean `true` imported but failed while opening
+with `TypeError: n.visibility.includes is not a function`; changing it to the
+native empty-string representation allowed the tested PTool to open and run.
+Do not infer conditional-visibility syntax from this one unconditional value,
+and do not backport the rule to an older version without its own export evidence.
+
 Use `scripts/form_normalization.py` or copy only the small helper needed into a PEKAT Code module. Do not use `bool("false")`.
 
 ```python
@@ -93,7 +100,7 @@ Changing the local runtime dict is not a UI persistence API.
 python scripts/generate_code_module.py spec.json --output threshold
 ```
 
-The generator derives the extension, validates JSON types, unique Form keys/IDs, Form values, and Python AST/entrypoint. It writes UTF-8 JSON and never opens PEKAT.
+The generator derives the extension, validates JSON types, unique Form keys/IDs, Form values, and Python AST/entrypoint. For 4.0.1 it emits and enforces string `visibility: ""`; boolean or unknown non-empty visibility is rejected. It writes UTF-8 JSON and never opens PEKAT.
 
 ## Acceptance sequence
 
@@ -105,6 +112,9 @@ The generator derives the extension, validates JSON types, unique Form keys/IDs,
 6. Export under a new name and compare semantic fields.
 7. Reimport into another clean project.
 
-Until steps 3-7 are actually performed, report `statically_validated / UI round-trip open`, not runtime PASS.
+The 2026-08-14 test completed import/open/run for one externally generated
+4.0.1 Code/Form PTool, so that bounded gate is closed. Steps 6-7 for that
+generated artifact remain open; do not call it a complete round-trip until its
+reexport and reimport into a second clean project pass.
 
 Legacy public evidence ID retained for regression routing: `pekat-module-export-schema-v1`.

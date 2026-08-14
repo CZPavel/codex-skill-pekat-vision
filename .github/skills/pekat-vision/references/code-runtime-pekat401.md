@@ -7,7 +7,8 @@
 3. [Functionally verified](#functionally-verified)
 4. [Import verified](#import-verified)
 5. [Broken or unavailable](#broken-or-unavailable)
-6. [Code generation routing](#code-generation-routing)
+6. [Sequential image replacement](#sequential-image-replacement)
+7. [Code generation routing](#code-generation-routing)
 
 ## Exact tested runtime
 
@@ -101,6 +102,22 @@ communication or other operation-specific behavior.
 For tabular/data tasks prefer `numpy`, standard `csv`/`json`, or `openpyxl`
 when suitable. For ONNX, distinguish installed `onnx` model tooling from the
 unavailable `onnxruntime` inference package.
+
+## Sequential image replacement
+
+A direct PEKAT 4.0.1 sequential FLOW test on 2026-08-14 assigned a new NumPy
+array to `context["image"]`. The input BGR `uint8` shape `(864, 1184, 3)` was
+resized to `(432, 592, 3)`, and the immediately following Code tool received
+that new shape. This verifies changed-resolution propagation within that tested
+sequential evaluation. It does not prove Parallelism merge/copy semantics or
+compatibility with every downstream PEKAT tool.
+
+On the same tested PC/runtime, a simple OpenCV pipeline processed a `1184x864`
+BGR `uint8` image through auto-brightness, CLAHE, 2x cubic resize and unsharp
+mask to `2368x1728` in about `20.4 ms` (`7.3 + 4.7 + 1.9 + 6.5 ms`). Treat this
+as one-run performance evidence, not a universal benchmark. It supports trying
+a small NumPy/OpenCV transform before a neural reconstruction model when the
+task only needs conventional enhancement.
 
 ## Code generation routing
 
