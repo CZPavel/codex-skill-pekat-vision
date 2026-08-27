@@ -45,6 +45,29 @@ Use image bytes in `data=`, an appropriate `Content-Type`, bounded connect/read 
 
 Do not automatically add retry. Add it only when the operation is safe/idempotent and a concrete reliability requirement or observed transient failure justifies it. Then bound attempts/backoff and test terminal behavior. Treat persistent remote state with freshness/sequence/validity only when the use case requires it.
 
+### Exact PEKAT 4.0.3 public runtime
+
+The tested public REST surface confirmed:
+
+- `GET /ping` and `GET /last_image`;
+- `POST /analyze_image` and `POST /analyze_raw_image`;
+- response forms `context`, `image`, `annotated_image`, and `heatmap`;
+- `ContextBase64utf`, `context_in_body`, `ImageLen`, and exact string `data`
+  in their tested request/response contracts.
+
+Keep parameter placement/encoding exact to the target endpoint rather than
+mixing these named fields into one invented universal payload. Runtime quirks:
+
+| Invalid input | Observed 4.0.3 response |
+|---|---|
+| analyze `response_type` | HTTP 400 |
+| `/last_image` `response_type` | HTTP 200, `image/png`, zero-byte body |
+| missing/invalid analyze image | HTTP 400 with internal OpenCV traceback details |
+
+Guard status, content type, body length, and parse separately. Treat traceback
+text as diagnostic data and avoid exposing internal details unnecessarily. Do
+not reinterpret the zero-byte PNG as a valid image.
+
 ## Official SDK
 
 Prefer the official Python, C, or .NET SDK for an external application when it provides the exact running-project path needed. Keep SDK version separate from PEKAT application version; verify compatibility rather than inferring it. REST may be sufficient for a small custom integration that does not benefit from an SDK wrapper.
@@ -60,6 +83,12 @@ Projects Manager owns lifecycle; it is not the image-analysis API. Exact-version
 - explicit hybrid with one authority per transition.
 
 Default to read-only status/listing. Require exact protocol evidence and approval before a lifecycle mutation. Avoid adding a state machine/watchdog unless the operating requirement calls for one.
+
+For readiness, neither `running.db`, `cameraIsRunning`, nor saved provider state
+is sufficient. Correlate process/PID → listening port → `/ping` →
+inference/model ready → camera/provider live. Basic lifecycle evidence does not
+close repeated clean startup distribution or stuck `Stopping`/`Starting` cases;
+do not use restart as universal recovery.
 
 ## Cross-PEKAT
 
@@ -82,6 +111,11 @@ The PEKAT 4.0.1 Code environment directly tested on one Windows AMD64 installati
 
 For any external communication choice, state what moves, who initiates, whether a response must return into FLOW, whether persistence/retry is required, and the required failure behavior. Distinguish transport timeout, connection failure, HTTP/protocol error, invalid payload, stale data, and a valid application-level NOK result. Add retry/reconnect/fallback only where the operating requirement needs it.
 
+REST analysis success and output persistence are separate. In exact 4.0.3, a
+native Image Saver with a missing configured root could leave REST at HTTP 200
+and Context `error=false` while the failure appeared only in project logs and no
+file persisted. Check the filesystem/log outcome when persistence matters.
+
 ## Network Code boundary
 
 Per-evaluation Code may use a small bounded call only when latency and failure semantics fit the FLOW. Otherwise prefer an external poller/bridge or native Output. Never use an unbounded timeout, infinite loop, hidden credential, or private endpoint in a reusable example.
@@ -94,6 +128,10 @@ Use `127.0.0.1` or TEST-NET addresses in public examples. Keep credentials outsi
 - Basler/pylon: use PEKAT-side architecture here and `basler-cameras` if installed.
 - Kepware, ThingWorx/FIOT, or enterprise middleware: use the corresponding specialized skill/tool if available; otherwise current primary vendor docs. Specialized capability is runtime-optional, not a prerequisite for PEKAT guidance.
 
-Open gates: live REST smoke on current installs, exact current SDK release matrix, Projects Manager TCP regression, and Cross-PEKAT reconnect/failure/stale-state acceptance.
+Internal Socket.IO observations are diagnostic evidence, not a supported public
+API. Do not add browser/Socket.IO FLOW authoring, `update_flow`/`set_store`
+automation, or autonomous lifecycle control to the normal skill workflow.
+
+Open gates: REST variants beyond the exact 4.0.3 cases above, exact current SDK release matrix, Projects Manager TCP repeated-readiness/stuck-state regression, and Cross-PEKAT reconnect/failure/stale-state acceptance.
 
 Legacy public evidence ID retained for regression routing: `pekat-kb-4-0-1-page-1513133459`.

@@ -4,7 +4,7 @@
 
 1. [Safety and scope](#safety-and-scope)
 2. [Compatibility workflow](#compatibility-workflow)
-3. [PEKAT 4.0.1 ABI](#pekat-401-abi)
+3. [PEKAT 4.0.x exact ABI](#pekat-40x-exact-abi)
 4. [Installation boundary](#installation-boundary)
 5. [PTool/PModule dependencies](#ptoolpmodule-dependencies)
 
@@ -25,7 +25,7 @@ result, backing up the target, then copying only through an approved method.
 
 ## Compatibility workflow
 
-1. Identify the exact PEKAT version; do not reuse the 4.0.1 matrix for 3.x.
+1. Identify the exact PEKAT version and embedded interpreter; do not combine 4.0.1, 4.0.3, and 3.x package matrices.
 2. Fingerprint the Code runtime ABI/architecture with
    `scripts/runtime_fingerprint.py` or direct Code runtime evidence.
 3. Test whether the import already works inside Code.
@@ -33,23 +33,27 @@ result, backing up the target, then copying only through an approved method.
    `.pyd`, `.dll` or compiled dependency.
 5. Inspect all transitive dependencies and native-runtime requirements.
 6. Check exact Python, ABI and Windows architecture tags.
-7. Select an evidence-backed staging/install method for the target server;
+7. If the import is missing, select the smallest evidence-backed staging/install method for the target server;
    preserve a rollback copy and avoid overwriting unrelated vendor files.
 8. Restart only the relevant isolated project/server if the approved method
    requires it; do not restart a production project as a generic diagnostic.
 9. Run a direct Code import probe.
 10. Run one minimal functional call appropriate to the library.
-11. Record PEKAT version/build, package version, origin and test boundary.
+11. Record PEKAT version/build, package version, origin, test boundary, and that the installation is now locally modified rather than clean/vendor baseline.
 
 Success gate:
 
 ```text
-files copied < import in PEKAT Code < minimal functional call in PEKAT Code
+exact embedded Python + current package state < minimal approved install < import in PEKAT Code < minimal functional call in PEKAT Code < local-modification record
 ```
 
-## PEKAT 4.0.1 ABI
+System Python success is not proof for PEKAT's embedded interpreter. During
+ordinary diagnosis, skill synchronization, or an evidence review, stop before
+installation; do not mutate the runtime merely to close a documentation gap.
 
-The directly tested Windows runtime is:
+## PEKAT 4.0.x exact ABI
+
+The directly tested 4.0.1 and clean tested 4.0.3 Windows runtimes both used:
 
 ```text
 CPython 3.12.12
@@ -79,11 +83,11 @@ runtime success gate.
 
 ## Installation boundary
 
-- `zxingcpp`/zxing-cpp 3.1.0 was an additional user-confirmed installation on
-  the tested PC and its native decoder call worked in Code.
-- `pyzbar` 0.1.9 was likely added locally; installer evidence corroborated it
-  and native ZBar decode worked in Code.
-- Neither package is guaranteed in a clean PEKAT 4.0.1 installation.
+- `zxingcpp`/zxing-cpp 3.1.0 and `pyzbar` 0.1.9 were local post-install
+  additions in the tested 4.0.1 installation; bounded native decoder calls
+  worked in Code.
+- They are not bundled PEKAT packages and both were absent in the clean tested
+  4.0.3 installation. That absence is not a vendor regression.
 - `imageio` demonstrates why copied files are insufficient: it is present but
   import fails because flattened distribution metadata is unavailable.
 - `vmbpy` demonstrates the native-runtime gate: the Python layer is present but

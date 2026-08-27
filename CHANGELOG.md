@@ -1,6 +1,14 @@
 # Changelog
 
-## Unreleased - 2026-08-14
+## Unreleased - 2026-08-27
+
+- Synchronized the current skill with RC1.4 exact PEKAT 4.0.3 evidence while preserving 3.18.x, 3.19.3/3.19.x, common 4.0.x, and exact 4.0.1 routing.
+- Added the clean 4.0.3 Code/ML/GPU matrix, missing-package boundaries, and corrected `zxingcpp`/`pyzbar` local-add-on provenance.
+- Added process-lifetime GlobalData, branch-order collision, inspection side-effect, Classifier-first-winner, zero-survivor, generated FLOW/Gate encoding, Folder, Saver, PTool, REST/readiness, and PEKAT-specific Basler guidance.
+- Kept `module_spec.schema.json`, generator, template, REST/Projects Manager helpers, and `agents/openai.yaml` unchanged; exact 4.0.3 UI evidence does not silently extend generator support.
+- Added focused RC1.4 semantic regressions and retained the no-browser/no-Socket.IO/no-Skill-2.0 boundary.
+
+## Previous unreleased scope - 2026-08-14
 
 - Added a three-layer PEKAT 4.0.1 Parallelism contract that separates custom Context, native result/overlay data, and the raster image.
 - Added mutually exclusive Conditional Gate routing, empty original-image pass-through, bounded geometry guidance, GlobalData concurrency gates, and machine-readable semantic regressions.

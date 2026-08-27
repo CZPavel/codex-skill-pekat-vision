@@ -7,6 +7,7 @@
 | 3.18.x | Do not generate without an exact export/schema | No universal signature: documentation contains `main(context)` and legacy alternatives | Code documented; current Form/export schema open |
 | 3.19.3 | `.pmodule` | Form exports use `main(context, form)`; no-Form `main(context)` is safe, while a fresh UI record also stored two args with empty Form | JSON/export static evidence; exact runtime/round-trip open |
 | 4.0.1 | `.ptool` | `main(context)` without Form; `main(context, form)` with Form | Both signatures and Form runtime tested; create/edit/run/export plus one externally generated import/open/run tested; generated reexport/reimport open |
+| 4.0.3 | `.ptool` family verified through exact UI fixture; bundled generator remains unextended | use the common 4.0.x entrypoint contract unless exact artifact says otherwise | import → run → export → remove → reimport → run passed; no schema/generator generalization from one fixture |
 
 A module/tool export is one Code step, not a project and not a sandbox. Never rename `.pmodule` to `.ptool` or only edit the root version.
 
@@ -100,7 +101,7 @@ Changing the local runtime dict is not a UI persistence API.
 python scripts/generate_code_module.py spec.json --output threshold
 ```
 
-The generator derives the extension, validates JSON types, unique Form keys/IDs, Form values, and Python AST/entrypoint. For 4.0.1 it emits and enforces string `visibility: ""`; boolean or unknown non-empty visibility is rejected. It writes UTF-8 JSON and never opens PEKAT.
+The generator derives the extension, validates JSON types, unique Form keys/IDs, Form values, and Python AST/entrypoint. Its validated targets remain exactly 3.19.3 and 4.0.1. For 4.0.1 it emits and enforces string `visibility: ""`; boolean or unknown non-empty visibility is rejected. Exact 4.0.3 PTool round-trip evidence did not prove that every generator/schema field is unchanged, so do not add a target string or invent schema from it. The helper writes UTF-8 JSON and never opens PEKAT.
 
 ## Acceptance sequence
 
@@ -113,8 +114,24 @@ The generator derives the extension, validates JSON types, unique Form keys/IDs,
 7. Reimport into another clean project.
 
 The 2026-08-14 test completed import/open/run for one externally generated
-4.0.1 Code/Form PTool, so that bounded gate is closed. Steps 6-7 for that
-generated artifact remain open; do not call it a complete round-trip until its
-reexport and reimport into a second clean project pass.
+4.0.1 Code/Form PTool. Steps 6-7 for that generated artifact remain open.
+
+For a separate exact 4.0.3 fixture, the full supported UI sequence passed:
+
+```text
+import → run → export → remove → reimport → run
+```
+
+Semantic comparison preserved `sourceCode`, `form`, `defaultValue`,
+`formValues`, `showImagePreview`, `gpuSettings`, and module version. Correct UI
+insertion put the imported module into FLOW. An earlier orphan direct-import
+probe did not establish a universal import contract; it was not proof that
+ordinary supported UI import necessarily creates an orphan. Internal event
+details remain evidence, not a public authoring API.
+
+The PTool still does not carry third-party packages or model assets. In
+particular, `zxingcpp`/`pyzbar` require a local add-on installation and were not
+present in clean tested 4.0.3. Preserve reproduced unconditional
+`"visibility": ""`; do not invent conditional syntax or boolean visibility.
 
 Legacy public evidence ID retained for regression routing: `pekat-module-export-schema-v1`.

@@ -101,7 +101,7 @@ Missing `isActive` is not `False`; some observed live model records omit it. A s
 
 Do not treat all branch data as one generic Context merge. In controlled tests, custom branch `context["X"]` changes did not propagate through a true multi-branch join, including equal-value writes. Do not propose first/last-writer, union, consensus, timing or branch-position logic.
 
-For mutually exclusive routing, prefer Conditional Gates whose conditions ensure exactly one branch continues for a frame. That surviving branch may propagate custom Context. Gate FALSE is not equivalent to an empty branch; behavior with no surviving branches remains open.
+For mutually exclusive routing, prefer Conditional Gates whose conditions ensure exactly one branch continues for a frame. That surviving branch may propagate custom Context. Gate FALSE is not equivalent to an empty branch. In exact 4.0.3 zero-survivor tests, all branches exiting did not automatically terminate the whole FLOW: downstream continued from the pre-parallel Context.
 
 An empty branch is not automatically redundant:
 
@@ -118,7 +118,51 @@ This is a practical original-image pass-through pattern. It also creates a true 
 
 Prefer PEKAT-native `result` for parallel OK/NOK and native detections/classes/heatmaps for result visualization. They do not follow the tested custom-Context rule. Bounding boxes/heatmaps are overlay metadata, not automatically drawn into the raster. Standard crop mapping was practically observed; verify or explicitly transform coordinates after rotation, Unifier, custom resize or warp.
 
-Do not replace this simple topology with a GlobalData state machine merely to merge branches. Concurrent GlobalData write/collision/winner semantics are unverified and persistent values can become stale.
+Do not replace this simple topology with a GlobalData state machine merely to merge branches. In exact 4.0.3, independent branch keys could survive and a same-key collision was deterministic by branch order, not wall-clock completion. Use branch-specific keys plus explicit merge; remember that GlobalData resets with the project-server process and can otherwise become stale.
+
+## Exact generated FLOW boundary
+
+A generated PEKAT 4.0.1 `database/modules.db` fixture loaded and ran with:
+
+- `modules.items` plus recursive `modules.sort`;
+- nested Parallelism and an explicit `[]` empty branch;
+- Code, Detector, OCR, Conditional Gate stored internally as `FILTER`, Mask,
+  structural Image Saver, and explicit `modelId` for model-backed tools.
+
+This closes only the exact fixture proof. Direct DB generation remains an
+exact-version, internal/offline, fixture-backed technique, not a stable public
+API or the normal authoring recommendation. Prefer the PEKAT UI/supported
+workflow and do not infer unobserved module fields.
+
+For the reproduced exact-version Gate fixture, the encoded class name was:
+
+```text
+classname = local_class_id * 2^42 + source_module_id
+2^42 = 4398046511104
+```
+
+Do not reverse the IDs. This encoding is internal and version-gated.
+
+## Classifier boundary
+
+Classifier `classNames` may contain all candidate classes. In reproduced PEKAT
+4 runtime the first element is the winner; candidate presence elsewhere is not
+final classification. Never implement winner routing with `any(candidate
+label)`, and keep Detector result/detection semantics separate.
+
+## Folder and native Image Saver 4.0.3 evidence
+
+- Folder F1 new-file watcher, F2 `analyzeExisting`, and F3 simulation plus
+  `analyzeExisting` passed. `context["data"]` was filename-only `str`; do not
+  generalize that to another provider/version. For programmatic settings,
+  write the leaf, wait for persistence/readback, then perform the dependent
+  operation.
+- Native Image Saver `ALL` + local + `by_days` + `image_only` persisted PNGs.
+  The configured root had to exist and was not auto-created. A missing root
+  could be log-only while REST still returned HTTP 200 with `error=false`.
+  Transport/analysis success is not persistence success. OK/NOK triggers,
+  overlays/rectangles, heatmaps, and exact source-versus-processed behavior
+  remain untested.
 
 ## Static Code inventory
 
@@ -157,8 +201,8 @@ Priority order:
 1. analyze and explain;
 2. propose a readable FLOW skeleton;
 3. prepare a dry-run/patch plan over a project copy;
-4. generate/modify `.db` only for a controlled exact-schema laboratory case.
+4. generate/modify `.db` only for a controlled exact-schema, fixture-backed laboratory case.
 
 Do not create a universal Pickle writer. Before any DB mutation require a copy, version/schema evidence, deterministic diff, isolated import/open test, rollback, and explicit approval.
 
-Known gates: clean 3.18 fixture, full type-specific schema across releases, zero-surviving Gate branches, branch-local A1→A2 custom propagation, generalized native-result merge, concurrent GlobalData writes, arbitrary geometry remap, every upgrade route, and universal DB generation.
+Known gates: clean 3.18 fixture, full type-specific schema across releases, branch-local A1→A2 custom propagation, generalized native-result merge, untested GlobalData collision patterns beyond the exact 4.0.3 result, arbitrary geometry remap, every upgrade route, remaining Saver variants, and universal DB generation.

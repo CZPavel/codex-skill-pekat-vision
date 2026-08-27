@@ -60,8 +60,8 @@ claim that a PEKAT tool uses that library/model.
 | `faiss` | 1.14.1 | CPU `IndexFlatL2` search; GPU count `1` is visibility, not GPU search |
 | `onnx` | 1.20.1 | graph/model creation, checker and RAM serialization; no inference |
 | `tensorrt` | 10.13.0.35 | Runtime object creation; no engine build/inference |
-| `zxingcpp` | 3.1.0 | native blank-image decoder call; additional local installation on tested PC |
-| `pyzbar` | 0.1.9 | native ZBar blank-image decode; likely additional local installation |
+| `zxingcpp` | 3.1.0 | native blank-image decoder call; local post-install addition, not bundled |
+| `pyzbar` | 0.1.9 | native ZBar blank-image decode; local post-install addition, not bundled |
 | `pypylon` | unknown | `TlFactory` + device enumeration; zero devices, no acquisition |
 | `harvesters` | 1.4.2 | `Harvester` object creation; no CTI/device acquisition |
 | `snap7` | 2.0.2 | native Client construction/destruction; no PLC communication |
@@ -102,6 +102,10 @@ communication or other operation-specific behavior.
 For tabular/data tasks prefer `numpy`, standard `csv`/`json`, or `openpyxl`
 when suitable. For ONNX, distinguish installed `onnx` model tooling from the
 unavailable `onnxruntime` inference package.
+
+Clean tested 4.0.3 also lacked `zxingcpp` and `pyzbar`. Their absence is not a
+vendor regression: this tested 4.0.1 installation was locally modified. Read
+`code-runtime-pekat403.md` before transferring a 4.0.1 recipe or package claim.
 
 ## Sequential image replacement
 

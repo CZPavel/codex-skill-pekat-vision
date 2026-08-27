@@ -43,7 +43,7 @@ Never use `database/running.db` existence as a process-alive marker. It was
 observed in inactive backups/clones as well as active projects. Correlate:
 
 ```text
-project metadata + process command line + PID/start state + configured/listening port + logs
+project metadata + process command line + PID/start state + configured/listening port + /ping + inference/model state + camera/provider state + logs
 ```
 
 These are independent conditions:
@@ -56,8 +56,10 @@ PROJECT SERVER RUNNING
 != FLOW EVALUATING
 ```
 
-Stored camera configuration also does not prove current camera connection or
-ownership. A reachable port does not prove model readiness, valid acquisition or
+Stored camera configuration and `cameraIsRunning` also do not prove current
+camera connection or ownership. Use the readiness sequence process/PID →
+listening port → `/ping` → inference/model ready → camera/provider live. A
+reachable port or successful `/ping` alone does not prove valid acquisition or
 successful evaluation.
 
 ## FLOW/database route
@@ -71,7 +73,7 @@ and never executes Code or Pickle object construction. Do not use generic
 ## Troubleshooting order
 
 1. Confirm exact project path, package metadata and version.
-2. Confirm process/port only if runtime status matters.
+2. If runtime status matters, correlate process/PID, port, `/ping`, model/inference and provider/camera instead of reading disk flags alone.
 3. Analyze the relevant log session and first error family.
 4. Check camera provider/discovery/init/acquisition when indicated.
 5. Check model identity/load/readiness when indicated.

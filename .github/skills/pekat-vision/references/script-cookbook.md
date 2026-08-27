@@ -2,8 +2,8 @@
 
 These are small patterns, not universal modules. Select the exact-version entrypoint from `version-context.md`; examples without Form use `main(context)`. Declare Context inputs/outputs and side effects. Prefer a native PEKAT tool/Gate before Code.
 
-Before importing a non-standard library, route PEKAT 4.0.1 through
-`code-runtime-pekat401.md`. Prefer native PEKAT → simple FLOW → NumPy/OpenCV →
+Before importing a non-standard library, route the exact PEKAT 4.0.x target
+through `code-runtime-pekat401.md` or `code-runtime-pekat403.md`. Prefer native PEKAT → simple FLOW → NumPy/OpenCV →
 SciPy/skimage/sklearn → bounded communication → heavy ML/GPU → a new dependency.
 For `.ptool`/`.pmodule`, apply the external dependency rule in
 `code-library-installation.md`.
@@ -59,7 +59,47 @@ def main(context):
     global_data["accepted_count"] = int(global_data.get("accepted_count", 0)) + 1
 ```
 
-Use only for 4.x where the exact contract is confirmed. It is not Cross-PEKAT. Define initialization and reset; restart/concurrent-write/collision ordering remains an acceptance gate. Do not use GlobalData automatically to work around custom Context behavior at a parallel join.
+Use only for 4.x where the exact contract is confirmed. It is not Cross-PEKAT
+or durable storage: values persist only in the same project-server process and
+reset on project restart. Do not use GlobalData automatically to work around
+custom Context behavior at a parallel join.
+
+For Parallelism, use branch-owned keys and merge explicitly:
+
+```python
+def main(context):
+    global_data = context.get("globalData")
+    if not isinstance(global_data, dict):
+        context["code_error"] = "globalData unavailable"
+        return
+    global_data["branch_a_result"] = context.get("result")
+```
+
+Independent keys may survive in exact 4.0.3 tests. Same-key collision was
+branch-order dependent rather than wall-clock dependent, so never use a shared
+key as an automatic last-finisher merge.
+
+## Read the Classifier winner
+
+Recommended PEKAT 4 Classifier extraction:
+
+```python
+def main(context):
+    rectangles = context.get("detectedRectangles")
+    if not isinstance(rectangles, list) or not rectangles:
+        context["classifier_label"] = None
+        return
+    rect = rectangles[0] if isinstance(rectangles[0], dict) else {}
+    classes = rect.get("classNames", []) or []
+    winner = classes[0] if classes else None
+    label = winner.get("label") if isinstance(winner, dict) else None
+    context["classifier_label"] = label
+```
+
+`classNames` may contain every candidate. The reproduced PEKAT 4 winner is the
+first element, so `any(c.get("label") == wanted for c in classes)` is an
+anti-pattern for winner selection. Keep Classifier ranking separate from
+Detector semantics and confirm producer-specific rectangle structure.
 
 ## Filter detections defensively
 
@@ -164,7 +204,41 @@ def main(context, form):
     context["save_status"] = "written"
 ```
 
-Use only when a filesystem write is requested and authorized. Replace the naming/collision/retention policy for the real application; do not embed a customer path. Prefer native Image Saver when it meets the need.
+Use only when a filesystem write is requested and authorized. Replace the naming/collision/retention policy for the real application; do not embed a customer path. Prefer native Image Saver when it meets the need. Exact 4.0.3 evidence covers native `ALL` + local + `by_days` + `image_only`: the root must already exist, a missing root may be reported only in project logs, and HTTP/context success does not prove persistence. Do not claim the untested OK/NOK, overlay/rectangle, heatmap, or exact source-versus-processed matrix.
+
+## Folder provider filename
+
+In exact PEKAT 4.0.3 Folder-provider F1/F2/F3 tests, `context["data"]`
+was a filename-only `str`, not a full path or structured object:
+
+```python
+def main(context):
+    name = context.get("data")
+    if not isinstance(name, str) or not name:
+        context["code_error"] = "4.0.3 Folder filename unavailable"
+        return
+    context["folder_filename"] = name
+```
+
+Keep this scoped to the tested 4.0.3 Folder provider. Do not reconstruct or
+trust a filesystem path without an independently configured, validated root.
+
+## Barcode add-on boundary
+
+Recipes using `zxingcpp` or `pyzbar` **require a local add-on dependency**.
+Neither is bundled: both were locally added in tested 4.0.1 and both were
+`NOT_PRESENT` in clean tested 4.0.3. A `.ptool` does not carry them. Before use,
+follow `code-library-installation.md` and verify import plus one bounded decoder
+call inside the exact destination Code runtime.
+
+## Own neural inference
+
+Do not assume `onnxruntime`. In clean tested 4.0.3, Torch 2.7.1+cu128 completed
+a real CUDA calculation, FAISS 1.14.1 passed CPU add/search, ONNX 1.20.1 passed
+model create/check/serialize only, and TensorRT 10.13.0.35 passed Runtime object
+creation only. Choose a path from the exact proven operation, not package name
+presence, and keep the Code wrapper small rather than creating a general model
+orchestration framework.
 
 ## Form normalization
 

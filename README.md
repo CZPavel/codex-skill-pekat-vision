@@ -1,6 +1,6 @@
 # Codex Skill: PEKAT VISION
 
-Public, version-aware Codex skill for PEKAT VISION 3.18.x, 3.19.3 and 4.0.1. The canonical skill is `.github/skills/pekat-vision`; no domain scripts/references are mirrored elsewhere in this repository.
+Public, version-aware Codex skill for PEKAT VISION 3.18.x, 3.19.x and 4.0.x, with exact 3.19.3, 4.0.1 and 4.0.3 evidence. The canonical skill is `.github/skills/pekat-vision`; no domain scripts/references are mirrored elsewhere in this repository.
 
 ## Capabilities
 
@@ -11,6 +11,8 @@ Public, version-aware Codex skill for PEKAT VISION 3.18.x, 3.19.3 and 4.0.1. The
 - Safely analyze a PEKAT project/database directory or ZIP: restricted non-executing protocol-4 Pickle reader, recursive `modules.sort`/Parallelism, active/disabled/soft-deleted state, Filter/Gate rules, Code dependencies/side effects, and separate `database_old` migration diff.
 - Analyze `output.log` families and project metadata/runtime state without treating `running.db` as process liveness.
 - Route the directly tested PEKAT 4.0.1 Code library matrix, `cp312`/`win_amd64` wheel compatibility, and evidence-backed third-party library staging/acceptance.
+- Route the clean tested PEKAT 4.0.3 CPython/ML/GPU matrix without conflating Torch CUDA, FAISS CPU, ONNX tooling, TensorRT Runtime-only evidence, missing packages, or locally added barcode dependencies.
+- Apply exact 4.0.3 GlobalData restart/collision, zero-survivor, Folder filename, native Image Saver persistence, PTool full UI round-trip, public REST quirks, readiness, and PEKAT-specific Basler boundaries.
 - Distinguish REST/SDK, Projects Manager, Cross-PEKAT, GlobalData and PEKAT Output, with bounded failure handling rather than automatic reliability frameworks.
 - Route PEKAT-side MX-G2000/smart-camera/Basler/IFM integration and solve FOV/optics/lighting/motion/dataset constraints before overbuilding FLOW.
 
@@ -56,10 +58,11 @@ Automated validation never starts PEKAT or writes to a project, PLC, IO-Link dev
 
 - clean PEKAT 3.18 DB/export fixture and exact current Form/export contract;
 - 3.19.3 Form runtime plus full `.pmodule` round-trip;
-- 4.0.1 generated `.ptool` import/open/run is complete for the tested Code/Form use case; its reexport/reimport into a second clean project remains open;
+- 4.0.1 generated `.ptool` import/open/run is complete for the tested Code/Form use case; its reexport/reimport into a second clean project remains open. A separate exact 4.0.3 fixture completed import/run/export/remove/reimport/run, without extending the bundled generator/schema;
 - universal PEKAT DB writer (intentionally not implemented);
-- live REST/SDK/Projects Manager/Cross-PEKAT regression on current installs;
-- PEKAT 4.0.1 zero-surviving Gate behavior, branch-local A1→A2 propagation, generalized native-result merge, concurrent GlobalData writes, and arbitrary geometry remapping;
+- REST cases beyond the exact tested 4.0.3 public surface, SDK release matrix, Projects Manager repeated readiness/stuck lifecycle, and Cross-PEKAT regression;
+- branch-local A1→A2 propagation, generalized native-result merge, GlobalData patterns beyond the exact 4.0.3 collision result, and arbitrary geometry remapping;
+- native Image Saver OK/NOK, overlay/rectangle, heatmap, and exact source-versus-processed variants;
 - exact physical camera/IO-Link/vision acceptance.
 
 Static/schema/AST tests are not described as PEKAT runtime or UI proof.

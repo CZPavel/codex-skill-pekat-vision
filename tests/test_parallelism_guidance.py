@@ -56,18 +56,21 @@ def test_native_results_and_image_raster_are_separate_layers():
 
 def test_globaldata_is_not_claimed_as_a_parallel_merge_workaround():
     assert _contract()["globaldata"] == {
-        "concurrent_write_semantics": "open",
+        "independent_branch_keys_4_0_3": "may_survive",
+        "same_key_collision_4_0_3": "branch_order_dependent_not_wall_clock",
         "automatic_parallel_merge_workaround": False,
     }
 
 
 def test_unresolved_parallelism_cases_are_machine_readable():
     assert set(_contract()["open"]) == {
-        "zero_surviving_gate_branches",
         "branch_local_a1_to_a2",
         "generalized_native_result_merge",
         "arbitrary_geometry_remap",
     }
+    assert _contract()["exact_4_0_3"]["zero_surviving_branches"] == (
+        "downstream_can_continue_from_pre_parallel_context"
+    )
 
 
 def test_public_guidance_does_not_leak_private_runtime_provenance():

@@ -28,6 +28,16 @@ On the directly tested PEKAT 4.0.1 installation, `pypylon` imported and
 object layer was functional. This establishes Code capability, not physical
 camera acquisition or universal clean-install availability.
 
+PEKAT-specific exact 4.0.3 evidence adds only this bounded result: a Basler
+a2A2448-23gmBAS enumerated, selected, started, reconnected, and produced an
+inference path successfully. Stored PEKAT configuration is not necessarily the
+instantaneous live Auto value; keep persistent PEKAT config, PEKAT live feature
+state, and GenICam NodeMap distinct. `camera:stop` may retain exclusive device
+ownership. AcquisitionFrameRate 6 → 5 → 6 survived camera stop/start, while
+full project-server restart persistence remains open. Route detailed camera,
+node, trigger, bandwidth, and optics work to `basler-cameras`; do not duplicate
+that skill here.
+
 Choose one explicit owner:
 
 1. PEKAT native camera/provider path;
