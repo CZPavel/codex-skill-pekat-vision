@@ -7,9 +7,10 @@ description: Version-aware PEKAT VISION 3.18.x, 3.19.x, and 4.0.x work, includin
 
 1. Establish the target version or infer it only from explicit project/export metadata. Route `3.18.x`, `3.19.x` (exact `3.19.3`), and the common `4.0.x` contract with exact `4.0.1`/`4.0.3` evidence; never flatten exact-version differences or infer a version from one legacy DB field.
 2. For a failure, identify project/version, symptom and relevant log session before changing FLOW. Separate server, camera, model, filesystem and evaluation states.
-3. Choose the simplest working route: native PEKAT feature, simple FLOW, NumPy/OpenCV Code, specialized library, then heavy ML/new dependency only when justified.
-4. State the evidence class for consequential claims: documented, runtime/UI tested, observed/static, practical evidence, or unknown/open gate.
-5. Read only the relevant reference:
+3. Before redesigning an existing project, reconstruct the complete relevant FLOW and its behavioral contract, including continuation after joins and empty-branch roles. State **MUST PRESERVE** and **INTENTIONAL CHANGE**; preserve observable I/O, filenames/folders, compression, annotations, Form controls and side effects. Classify custom complexity as required behavior, relevant compatibility, proven redundancy or actual overengineering before removing it.
+4. Choose the simplest working route: native PEKAT feature, simple FLOW, NumPy/OpenCV Code, specialized library, then heavy ML/new dependency only when justified. Replace custom behavior with a native feature only after all required observable behavior is feature-equivalent or the user accepts the change.
+5. State the evidence class for consequential claims: documented, runtime/UI tested, observed/static, practical evidence, or unknown/open gate. Do not request a test that merely reconfirms already established exact-version behavior; test only a material unresolved dimension.
+6. Read only the relevant reference:
    - Version, Context, Parallelism data layers, `result`/`exit`, GlobalData, migration: `references/version-context.md`
    - `.pmodule`, `.ptool`, Form runtime and generation: `references/module-format.md`
    - FLOW, `modules.db`, `modules.sort`, `database_old`: `references/flow-database-projects.md`
@@ -22,8 +23,8 @@ description: Version-aware PEKAT VISION 3.18.x, 3.19.x, and 4.0.x work, includin
    - Minimal Code recipes: `references/script-cookbook.md`
    - MX-G2000, smart cameras, Basler and IFM routing: `references/industrial-hardware.md`
    - FOV, optics, lighting, motion, dataset and acceptance: `references/vision-design-routing.md`
-6. Declare Context/Form inputs, outputs, dependency/version assumptions, state lifetime, side effects, timeouts, and safety boundary before implementation.
-7. Validate locally with the bundled utility/test appropriate to the artifact; never describe static/unit validation as PEKAT runtime proof.
+7. Declare Context/Form inputs, outputs, dependency/version assumptions, state lifetime, side effects, timeouts, and safety boundary before implementation.
+8. Validate locally with the bundled utility/test appropriate to the artifact; never describe static/unit validation as PEKAT runtime proof.
 
 ## Code and export contract
 
@@ -32,6 +33,7 @@ description: Version-aware PEKAT VISION 3.18.x, 3.19.x, and 4.0.x work, includin
 - Preserve standard Context types. Change `result` only when requested; set `exit=True` only for deliberate termination of the current branch. Form is not `operatorInput`.
 - In PEKAT 4.0.1 sequential FLOW, `context["image"] = output` may replace the image with a new NumPy ndarray and a different shape; validate dtype/channels and every downstream consumer. Do not infer a universal parallel image-winner or geometry-remap contract.
 - In experimentally tested PEKAT 4.0.1, custom Context propagates sequentially but branch changes do not survive a true multi-branch join, including equal-value writes. Do not invent first/last-writer, union, or consensus merge. A mutually exclusive Conditional Gate router with exactly one continuing branch may propagate that branch's custom Context. In exact 4.0.3 zero-survivor tests, downstream FLOW could continue from the pre-parallel Context; all branch exits do not automatically terminate the whole FLOW.
+- Capturing `context["cap_raw_result"] = context.get("result")` is valid for sequential downstream or branch-local use before a join; it is not a mechanism for propagating custom Context through a true multi-branch join.
 - Keep three layers separate: custom `context["X"]`, PEKAT-native `result`/detections/classes/heatmaps, and raster `context["image"]`. Prefer native `result` for parallel OK/NOK. Native overlays are not automatically drawn into image pixels.
 - Do not remove an empty branch by default: it may pass the original/pre-transform image to UI or Image Saver while detector branches crop/preprocess. It also contributes to true multi-branch custom-Context semantics. Gate FALSE and a disabled/no-op branch are not equivalent to empty.
 - Use GlobalData only as the version-scoped PEKAT 4 project state contract. It persists across evaluations in one project-server process, resets on project-server restart, and is not durable storage. Use Context for one evaluation and Cross-PEKAT/REST/SDK for project boundaries.
@@ -55,6 +57,7 @@ description: Version-aware PEKAT VISION 3.18.x, 3.19.x, and 4.0.x work, includin
 - For local troubleshooting, run `scripts/analyze_pekat_log.py` and/or `scripts/pekat_project_diagnostics.py`. Never infer readiness from `running.db`, `cameraIsRunning`, or saved provider state alone; correlate process/PID, listening port, `/ping`, inference/model readiness, and camera/provider live state.
 - Distinguish REST/SDK (running-project inference), Projects Manager/Simple TCP (lifecycle), Cross-PEKAT (between projects), GlobalData (within one PEKAT 4 project), and PEKAT Output HTTP/CMD/TCP/S7 (simple external output).
 - Use bounded timeouts and explicit error handling. Do not automatically add retries or health frameworks.
+- Keep simple current-state Cross-PEKAT master/contributor exchange as the default when sufficient. Add timestamp/heartbeat/freshness/cycle or product identifiers only for actual stale-state detection, communication-loss detection, exact pairing, or another explicit application contract.
 - For a new library, identify exact version/ABI, inspect pure/native wheel and dependencies, stage only through an evidence-backed approved method, then require direct Code import and preferably a minimal functional call. Never auto-install during diagnosis.
 - Prefer native Image Saver when feature-equivalent. In exact 4.0.3, `ALL` + local + `by_days` + `image_only` persisted PNGs only when the root already existed; HTTP/context success did not prove filesystem persistence and a missing root could be log-only.
 - Treat internal `inspection:getContext`/`inspection:getFlow` as potentially evaluation-triggering, not behaviorally passive, when FLOW has Code, GlobalData, or I/O side effects. Do not promote internal Socket.IO or browser-driven project authoring into the normal workflow.

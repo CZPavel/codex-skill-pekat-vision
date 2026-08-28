@@ -264,7 +264,7 @@ PEKAT 4.0.1 number defaults may be strings and edited values integers; select de
 
 ## Cross-PEKAT state
 
-Use the exact installed-version `pekat_communication.PEKAT` contract. Keep client registration/remote update in a bounded adapter, expose connection/freshness state, and render it as a dependency outside local FLOW. Do not fabricate API arguments from a historical script and do not substitute local GlobalData.
+Use the exact installed-version `pekat_communication.PEKAT` contract. Keep client registration/remote update in a bounded adapter and render it as a dependency outside local FLOW. Simple current-state transfer is the default when sufficient. Expose freshness, heartbeat or cycle/product identity only when stale/loss detection, exact pairing or another explicit application contract requires it. Do not fabricate API arguments from a historical script and do not substitute local GlobalData.
 
 ## IFM read/write pointer
 

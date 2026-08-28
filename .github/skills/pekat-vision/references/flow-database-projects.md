@@ -101,6 +101,8 @@ Missing `isActive` is not `False`; some observed live model records omit it. A s
 
 Do not treat all branch data as one generic Context merge. In controlled tests, custom branch `context["X"]` changes did not propagate through a true multi-branch join, including equal-value writes. Do not propose first/last-writer, union, consensus, timing or branch-position logic.
 
+Capturing a tool result into a custom key such as `context["cap_raw_result"]` is useful for a following sequential step or branch-local consumer before the join. It is not a generic post-join propagation mechanism for a real multi-branch Parallelism.
+
 For mutually exclusive routing, prefer Conditional Gates whose conditions ensure exactly one branch continues for a frame. That surviving branch may propagate custom Context. Gate FALSE is not equivalent to an empty branch. In exact 4.0.3 zero-survivor tests, all branches exiting did not automatically terminate the whole FLOW: downstream continued from the pre-parallel Context.
 
 An empty branch is not automatically redundant:
