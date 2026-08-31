@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 SUPPORTED_VERSIONS = {"3.19.3": ".pmodule", "4.0.1": ".ptool", "4.0.3": ".ptool"}
+FOUR_ZERO_TARGETS = {"4.0.1", "4.0.3"}
 FORM_TYPES = {"text", "number", "checkbox", "select"}
 _id_lock = threading.Lock()
 _last_id = 0
@@ -223,9 +224,9 @@ class ModuleSpec:
         keys = [item.formKey for item in self.form]
         if len(keys) != len(set(keys)):
             raise ModuleSpecError("formKey values must be unique")
-        if self.target_version == "4.0.1" and any(item.visibility != "" for item in self.form):
+        if self.target_version in FOUR_ZERO_TARGETS and any(item.visibility != "" for item in self.form):
             raise ModuleSpecError(
-                "PEKAT 4.0.1 unconditional form.visibility must be the native-compatible empty string"
+                "PEKAT 4.0.x unconditional form.visibility must be the native-compatible empty string"
             )
         if self.target_version == "4.0.3":
             if not self.form:
@@ -277,15 +278,7 @@ class ModuleSpec:
             raise ModuleSpecError("epoch_ms must be an integer")
         exported_form = [item.export(base_id + index + 1) for index, item in enumerate(self.form)]
         item_map = {item.formKey: item for item in self.form}
-        if self.target_version == "4.0.3":
-            for item, exported in zip(self.form, exported_form, strict=True):
-                exported["defaultValue"] = item.normalize_403_value(item.defaultValue)
-                if item.type == "number":
-                    exported["min"] = _number(item.min, f"{item.formKey}.min")
-                    exported["max"] = _number(item.max, f"{item.formKey}.max")
-            values = {item.formKey: item.normalize_403_value(self.form_values.get(item.formKey, item.defaultValue)) for item in self.form}
-        else:
-            values = {key: item_map[key].normalize_value(value) for key, value in self.form_values.items()}
+        values = {key: item_map[key].normalize_value(value) for key, value in self.form_values.items()}
         return {
             "type": "CODE",
             "module": {

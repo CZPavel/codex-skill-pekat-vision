@@ -1,6 +1,6 @@
 # Exact PEKAT VISION 4.0.3 source state
 
-This reference separates stored evidence from runtime truth. It does not authorize a provider, camera or project write.
+This reference separates stored evidence from runtime truth. It does not authorize a provider, camera or project write. Its mappings are currently anchored on exact 4.0.3; retained sources do not establish a separate 4.0.1 anchor for every stored field, so this file and helper deliberately remain exact-scoped rather than claiming an unproved 4.0.x source-state schema.
 
 ## Stored mappings
 

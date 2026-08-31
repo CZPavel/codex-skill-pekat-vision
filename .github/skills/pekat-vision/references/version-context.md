@@ -17,7 +17,7 @@ Prefer current exact-version runtime/export evidence, then exact-version documen
 | FLOW unit | module (D) | module (D) | tool (D) | use the common 4.0.x tool contract; exact delta where tested |
 | No-Form Code | `main(context)` exists; documentation also contains inconsistent legacy signatures (D) | `main(context)` is a safe current pattern; fresh UI DB also stored `main(context, form)` with `form=[]` (D/S, runtime variant open) | `main(context)` runtime tested (E) | use the 4.0.x Code contract; do not infer an untested signature delta |
 | Form Code | exact current Form/export contract open | `main(context, form)` in documentation and real exports; exact runtime matrix open (D/R) | `main(context, form)` runtime tested (E) | tested PTool Code/Form fixture completed the full UI round-trip (E) |
-| Export | exact schema/extension open | `.pmodule`, root `type/module/version` observed; full runtime round-trip open (R) | `.ptool`, root `type/module/version`, create/edit/run/export and one externally generated import/open/run tested; that generated artifact's reexport/reimport remains open (R/E) | `.ptool` narrow CODE/Form generator: text/number/checkbox/select, exact `main(context, form)`, empty visibility and numeric min/max; no generic writer (E) |
+| Export | exact schema/extension open | `.pmodule`, root `type/module/version` observed; full runtime round-trip open (R) | `.ptool`, root `type/module/version`, create/edit/run/export and one externally generated import/open/run tested; that generated artifact's reexport/reimport remains open (R/E) | shared 4.0.x CODE/Form payload: text/number/checkbox/select and `main(context, form)`; exact 4.0.3 target acceptance keeps empty visibility and numeric min/max; no generic writer (E) |
 | GlobalData | not established | Inspection may show `globalData: null`; do not claim API/persistence | dict shared by Code tools and persisted between evaluations while the tested process ran; restart/collision details were then open (E) | persists only in one project-server process, resets on restart, not durable; independent keys may survive and same-key collision was branch-order dependent (E) |
 | DB topology | exact disk schema open | protocol-4 `modules.db`/`sort` contract observed (S/E) | generated fixture loaded/ran with recursive/nested `sort`, `[]`, Code/Detector/OCR/FILTER/Mask/Image Saver and explicit `modelId`; internal exact-version evidence (E/S) | observed common recursive topology; do not infer universal writer compatibility |
 | Folder `data` | open | open | open | F1/F2/F3 passed; `context["data"]` was filename-only `str` for the tested Folder provider (E) |
@@ -28,6 +28,20 @@ ABI values are local fingerprints, not universal guarantees. Re-probe another in
 For the complete exact-version import/function boundaries, read
 `code-runtime-pekat401.md` and `code-runtime-pekat403.md`; never combine the two
 into one universal 4.0.x package list or project either matrix onto 3.19.x.
+
+## PEKAT 4.0.x maintenance-family policy
+
+PEKAT 4.0.1 and 4.0.3 are one maintenance/bugfix family for shared behavior
+and routing. An exact documented delta overrides that family rule: package and
+runtime fingerprints, Smart Camera event schema changes, and 4.0.3 REST
+validation/error quirks stay exact-version scoped. Do not infer this family for
+4.1 or another higher minor version.
+
+Before proposing a version comparison, check the retained 4.0.1-to-4.0.3 delta
+material and use a known family contract where it already answers the question.
+Do not repeat the comparison merely to re-establish a shared Form, Gate/FILTER,
+Context, Code, or FLOW behavior. No 4.0.x routing statement authorizes a live
+runtime action or broadens the narrow exact-4.0.3 writer acceptance.
 
 ## Context cards
 

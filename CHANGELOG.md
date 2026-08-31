@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased - 2026-08-31 (4.0.x family normalization)
+
+- Normalized PEKAT 4.0.x version-family handling: exact 4.0.1/4.0.3 evidence remains anchored while common PTool/Form and Gate knowledge no longer implies separate behavioral universes.
+- Removed the artificial 4.0.1/4.0.3 PTool/Form serializer split; known output versions remain allowlisted and exact package/build deltas remain exact.
+- No new PEKAT runtime discovery was performed and no live writer was added.
+
 ## Unreleased - 2026-08-31
 
 - Targeted PEKAT Assistant 3.x verified-evidence backport: added the standalone exact-4.0.3 CODE/Form `.ptool` generator subset and offline read-only source-state helper.

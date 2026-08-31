@@ -97,7 +97,7 @@ Missing `isActive` is not `False`; some observed live model records omit it. A s
 - Top-level `modules.filter` is not the list of Conditional Gate nodes.
 - Report rule structure, `evalType`, and Context/GlobalData path without inventing missing semantics.
 
-Exact PEKAT 4.0.3 runtime evidence verifies only this narrow recipe: module
+The common observed PEKAT 4.0.x Gate/FILTER family has 4.0.1 and 4.0.3 evidence anchors. Exact 4.0.3 runtime evidence verifies this narrow recipe:
 type `FILTER`, one rule with `evalType="CONTEXT"`,
 `contextNode.path="/globalData/<key>"`, `valueType="boolean"`,
 `operator="EQUAL"` and a boolean value. It routed TRUE and FALSE exclusively

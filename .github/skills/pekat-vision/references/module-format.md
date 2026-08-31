@@ -6,8 +6,9 @@
 |---|---|---|---|
 | 3.18.x | Do not generate without an exact export/schema | No universal signature: documentation contains `main(context)` and legacy alternatives | Code documented; current Form/export schema open |
 | 3.19.3 | `.pmodule` | Form exports use `main(context, form)`; no-Form `main(context)` is safe, while a fresh UI record also stored two args with empty Form | JSON/export static evidence; exact runtime/round-trip open |
-| 4.0.1 | `.ptool` | `main(context)` without Form; `main(context, form)` with Form | Both signatures and Form runtime tested; create/edit/run/export plus one externally generated import/open/run tested; generated reexport/reimport open |
-| 4.0.3 | `.ptool`, narrow CODE/Form generator subset | exactly `main(context, form)` | exact runtime-accepted CODE/Form serializer only: text, number, checkbox, select; no generic module writer |
+| 4.0.x | `.ptool` known targets `4.0.1`/`4.0.3` | `main(context)` without Form or `main(context, form)` with Form | one common Form serializer; runtime/UI evidence anchors on 4.0.1 and 4.0.3 |
+
+The 4.0.3 generator target remains intentionally form-bearing because that is its accepted public subset, not because a second PEKAT Form schema is inferred. Root `version` remains the requested known target version.
 
 A module/tool export is one Code step, not a project and not a sandbox. Never rename `.pmodule` to `.ptool` or only edit the root version.
 
@@ -40,7 +41,7 @@ import test. A package verified in the 4.0.1 matrix is not thereby available in
 }
 ```
 
-This is an observed 3.19.3/4.0.1 family, not a public promise for all releases. Generate unique positive integer IDs and check collisions before import.
+This is an observed 3.19.3/4.0.x family, not a public promise for all releases. Generate unique positive integer IDs and check collisions before import.
 
 ## Form definition versus current state
 
@@ -49,7 +50,7 @@ This is an observed 3.19.3/4.0.1 family, not a public promise for all releases. 
 - `module.formValues` contains saved current/changed values by `formKey`; in a 4.0.1 UI test it was empty before edits and populated after edits without changing defaults.
 - `form` is a runtime dict and is separate from `context["operatorInput"]`.
 
-Runtime-tested PEKAT 4.0.1 representations:
+PEKAT 4.0.x runtime evidence anchors observed tolerant representations:
 
 | Type | Untouched default | After UI edit | Normalize when used |
 |---|---|---|---|
@@ -58,7 +59,7 @@ Runtime-tested PEKAT 4.0.1 representations:
 | checkbox | `bool` | `bool` | require bool; explicitly parse known legacy strings only if needed |
 | select | e.g. `"0"` index string | e.g. `"manual"` text | allow valid index or allowlisted text |
 
-For an unconditional PEKAT 4.0.1 Form item, preserve `"visibility": ""` as a
+For an unconditional PEKAT 4.0.x Form item, preserve `"visibility": ""` as a
 string. A generated item with boolean `true` imported but failed while opening
 with `TypeError: n.visibility.includes is not a function`; changing it to the
 native empty-string representation allowed the tested PTool to open and run.
@@ -101,7 +102,7 @@ Changing the local runtime dict is not a UI persistence API.
 python scripts/generate_code_module.py spec.json --output threshold
 ```
 
-The generator derives the extension, validates JSON types, unique Form keys/IDs, Form values, and Python AST/entrypoint. Its validated targets are 3.19.3, 4.0.1 and a narrow exact 4.0.3 CODE/Form subset. For 4.0.1 it emits and enforces string `visibility: ""`; boolean or unknown non-empty visibility is rejected. For 4.0.3 Form is required, `main(context, form)` is exact, visibility is `""`, number `min`/`max` are required numeric JSON values, and `formValues` is normalized for every declared item. The helper writes UTF-8 JSON and never opens PEKAT.
+The generator derives the extension, validates JSON types, unique Form keys/IDs, Form values, and Python AST/entrypoint. Its known 4.0.x targets are 4.0.1 and 4.0.3 and both use one serializer: native string `visibility: ""`, tolerant number/select normalization and explicit supplied `formValues`. The 4.0.3 target requires a Form and exact `main(context, form)` as its narrow accepted target scope. It is no generic module writer. The helper writes UTF-8 JSON and never opens PEKAT.
 
 ## Acceptance sequence
 

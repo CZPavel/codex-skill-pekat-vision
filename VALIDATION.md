@@ -2,7 +2,7 @@
 
 ## Unreleased - 2026-08-31
 
-Targeted PEKAT Assistant 3.x verified-evidence backport. The public bundle adds only an offline exact-4.0.3 CODE/Form artifact generator and a restricted-parser source-state reader. It does not include Assistant runtime architecture, private evidence, PEKAT transport or any writer.
+Targeted PEKAT Assistant 3.x verified-evidence backport and 4.0.x family normalization. The public bundle has one offline Form payload serializer for the 4.0.1/4.0.3 evidence anchors; the exact-4.0.3 CODE/Form acceptance remains a narrow target guard. The restricted-parser source-state reader remains exact 4.0.3 because retained evidence does not establish every stored mapping across the family. It does not include Assistant runtime architecture, private evidence, PEKAT transport or any writer.
 
 Final local validation is recorded with this change: complete pytest, compileall, official skill validation, public bundle/security checks and diff check. The source-state helper accepts only exact 4.0.3 primitive/container Pickle data and reports runtime state as unknown/not checked.
 

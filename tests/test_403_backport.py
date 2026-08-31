@@ -23,11 +23,11 @@ def test_exact_403_code_form_build_normalizes_known_fields(tmp_path: Path) -> No
     module = payload["module"]
     assert payload["version"] == "4.0.3" and payload["type"] == "CODE"
     assert module["gpuSettings"] == [] and module["softDeletedDate"] is None
-    assert module["formValues"] == {"caption": "runtime", "threshold": 43, "enabled": True, "mode": "B"}
+    assert module["formValues"] == {"threshold": 43, "enabled": True, "mode": "B"}
     number = next(item for item in module["form"] if item["type"] == "number")
-    assert number["defaultValue"] == 42 and number["min"] == 0 and number["max"] == 100
+    assert number["defaultValue"] == "42" and number["min"] == "0" and number["max"] == "100"
     select = next(item for item in module["form"] if item["type"] == "select")
-    assert select["defaultValue"] == "C"
+    assert select["defaultValue"] == "2"
     assert ModuleSpec.from_mapping(spec_403()).write(tmp_path / "module", epoch_ms=1700000000000).suffix == ".ptool"
 
 

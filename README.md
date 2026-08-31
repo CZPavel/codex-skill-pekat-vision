@@ -4,10 +4,10 @@ Public, version-aware Codex skill for PEKAT VISION 3.18.x, 3.19.x and 4.0.x, wit
 
 ## Capabilities
 
-- Generate and validate Code plus 3.19.3 `.pmodule`, 4.0.1 `.ptool`, and narrow exact-4.0.3 CODE/Form `.ptool` exports while keeping 3.18 export gates explicit.
+- Generate and validate Code plus 3.19.3 `.pmodule` and one common 4.0.x `.ptool` Form payload for the 4.0.1/4.0.3 evidence anchors; the narrow exact-4.0.3 CODE/Form acceptance remains a target guard, not a second serializer.
 - Route exact `main(...)` signatures, Context, `result`/`exit`, Form runtime values and PEKAT 4 GlobalData.
-- Generate native-compatible PEKAT 4.0.1 Form metadata and route verified sequential `context["image"]` replacement with changed resolution.
-- Route PEKAT 4.0.1 sequential versus true multi-branch custom Context, mutually exclusive Conditional Gates, native result/overlay behavior, empty original-image pass-through, and scoped GlobalData/geometry gates.
+- Generate native-compatible PEKAT 4.0.x Form metadata from the shared 4.0.1/4.0.3 evidence family and route verified sequential `context["image"]` replacement with changed resolution.
+- Route the shared observed 4.0.x sequential versus true multi-branch custom Context and mutually exclusive Conditional Gates; retain exact GlobalData/geometry deltas where stated.
 - Safely analyze a PEKAT project/database directory or ZIP: restricted non-executing protocol-4 Pickle reader, recursive `modules.sort`/Parallelism, active/disabled/soft-deleted state, Filter/Gate rules, Code dependencies/side effects, and separate `database_old` migration diff.
 - Analyze `output.log` families and project metadata/runtime state without treating `running.db` as process liveness; read exact-4.0.3 stored source state without a PEKAT connection.
 - Route the directly tested PEKAT 4.0.1 Code library matrix, `cp312`/`win_amd64` wheel compatibility, and evidence-backed third-party library staging/acceptance.
@@ -59,7 +59,7 @@ Automated validation never starts PEKAT or writes to a project, PLC, IO-Link dev
 
 - clean PEKAT 3.18 DB/export fixture and exact current Form/export contract;
 - 3.19.3 Form runtime plus full `.pmodule` round-trip;
-- 4.0.1 generated `.ptool` import/open/run is complete for the tested Code/Form use case; its reexport/reimport into a second clean project remains open. Exact 4.0.3 generation is limited to the separately tested CODE/Form subset, never a generic module/project writer;
+- 4.0.x generated `.ptool` import/open/run is evidenced by the tested 4.0.1 Code/Form case; its reexport/reimport into a second clean project remains open. The exact 4.0.3 acceptance remains limited to its separately tested CODE/Form subset, never a generic module/project writer;
 - universal PEKAT DB writer (intentionally not implemented);
 - REST cases beyond the exact tested 4.0.3 public surface, SDK release matrix, Projects Manager repeated readiness/stuck lifecycle, and Cross-PEKAT regression;
 - branch-local A1→A2 propagation, generalized native-result merge, GlobalData patterns beyond the exact 4.0.3 collision result, and arbitrary geometry remapping;
