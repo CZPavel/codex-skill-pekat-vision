@@ -7,7 +7,7 @@
 | 3.18.x | Do not generate without an exact export/schema | No universal signature: documentation contains `main(context)` and legacy alternatives | Code documented; current Form/export schema open |
 | 3.19.3 | `.pmodule` | Form exports use `main(context, form)`; no-Form `main(context)` is safe, while a fresh UI record also stored two args with empty Form | JSON/export static evidence; exact runtime/round-trip open |
 | 4.0.1 | `.ptool` | `main(context)` without Form; `main(context, form)` with Form | Both signatures and Form runtime tested; create/edit/run/export plus one externally generated import/open/run tested; generated reexport/reimport open |
-| 4.0.3 | `.ptool` family verified through exact UI fixture; bundled generator remains unextended | use the common 4.0.x entrypoint contract unless exact artifact says otherwise | import → run → export → remove → reimport → run passed; no schema/generator generalization from one fixture |
+| 4.0.3 | `.ptool`, narrow CODE/Form generator subset | exactly `main(context, form)` | exact runtime-accepted CODE/Form serializer only: text, number, checkbox, select; no generic module writer |
 
 A module/tool export is one Code step, not a project and not a sandbox. Never rename `.pmodule` to `.ptool` or only edit the root version.
 
@@ -101,7 +101,7 @@ Changing the local runtime dict is not a UI persistence API.
 python scripts/generate_code_module.py spec.json --output threshold
 ```
 
-The generator derives the extension, validates JSON types, unique Form keys/IDs, Form values, and Python AST/entrypoint. Its validated targets remain exactly 3.19.3 and 4.0.1. For 4.0.1 it emits and enforces string `visibility: ""`; boolean or unknown non-empty visibility is rejected. Exact 4.0.3 PTool round-trip evidence did not prove that every generator/schema field is unchanged, so do not add a target string or invent schema from it. The helper writes UTF-8 JSON and never opens PEKAT.
+The generator derives the extension, validates JSON types, unique Form keys/IDs, Form values, and Python AST/entrypoint. Its validated targets are 3.19.3, 4.0.1 and a narrow exact 4.0.3 CODE/Form subset. For 4.0.1 it emits and enforces string `visibility: ""`; boolean or unknown non-empty visibility is rejected. For 4.0.3 Form is required, `main(context, form)` is exact, visibility is `""`, number `min`/`max` are required numeric JSON values, and `formValues` is normalized for every declared item. The helper writes UTF-8 JSON and never opens PEKAT.
 
 ## Acceptance sequence
 

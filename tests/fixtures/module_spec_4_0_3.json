@@ -1,0 +1,12 @@
+{
+  "target_version": "4.0.3",
+  "label": "Exact 403 form fixture",
+  "source_code": "def main(context, form):\n    context['fixture'] = form\n",
+  "form": [
+    {"type": "text", "formKey": "caption", "label": "Caption", "defaultValue": "runtime", "visibility": ""},
+    {"type": "number", "formKey": "threshold", "label": "Threshold", "defaultValue": "42", "min": 0, "max": 100, "visibility": ""},
+    {"type": "checkbox", "formKey": "enabled", "label": "Enabled", "defaultValue": false, "visibility": ""},
+    {"type": "select", "formKey": "mode", "label": "Mode", "defaultValue": "2", "options": "A;B;C", "visibility": ""}
+  ],
+  "form_values": {"threshold": 43, "enabled": true, "mode": "B"}
+}

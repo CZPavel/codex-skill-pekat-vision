@@ -13,7 +13,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-SUPPORTED_VERSIONS = {"3.19.3": ".pmodule", "4.0.1": ".ptool"}
+SUPPORTED_VERSIONS = {"3.19.3": ".pmodule", "4.0.1": ".ptool", "4.0.3": ".ptool"}
 FORM_TYPES = {"text", "number", "checkbox", "select"}
 _id_lock = threading.Lock()
 _last_id = 0
@@ -146,6 +146,24 @@ class FormItem:
                 raise ModuleSpecError(f"{self.formKey}: value is neither an option nor a valid option index")
         return value
 
+    def normalize_403_value(self, value: Any) -> Any:
+        """Normalize exactly the four Form representations accepted in PEKAT 4.0.3."""
+        if self.type == "number":
+            return _number(value, self.formKey)
+        if self.type == "checkbox":
+            return _boolean(value, self.formKey)
+        if self.type == "text":
+            if not isinstance(value, str):
+                raise ModuleSpecError(f"{self.formKey} must be text")
+            return value
+        choices = self.options.split(";")
+        selected = str(value).strip()
+        if selected in choices:
+            return selected
+        if selected.isdigit() and 0 <= int(selected) < len(choices):
+            return choices[int(selected)]
+        raise ModuleSpecError(f"{self.formKey}: value is neither an option nor a valid option index")
+
     def export(self, generated_id: int) -> dict[str, Any]:
         result: dict[str, Any] = {
             "id": self.id if self.id is not None else generated_id,
@@ -209,6 +227,22 @@ class ModuleSpec:
             raise ModuleSpecError(
                 "PEKAT 4.0.1 unconditional form.visibility must be the native-compatible empty string"
             )
+        if self.target_version == "4.0.3":
+            if not self.form:
+                raise ModuleSpecError("PEKAT 4.0.3 generator supports only the accepted form-bearing CODE subset")
+            if any(item.visibility != "" for item in self.form):
+                raise ModuleSpecError("PEKAT 4.0.3 Form visibility must be the observed empty string")
+            for item in self.form:
+                if item.type == "number":
+                    if item.min == "" or item.max == "":
+                        raise ModuleSpecError(f"{item.formKey}: PEKAT 4.0.3 number requires min and max")
+                    item.normalize_403_value(item.defaultValue)
+                    _number(item.min, f"{item.formKey}.min")
+                    _number(item.max, f"{item.formKey}.max")
+                    if float(item.min) > float(item.max):
+                        raise ModuleSpecError(f"{item.formKey}: min is greater than max")
+                else:
+                    item.normalize_403_value(item.defaultValue)
         unknown = sorted(set(self.form_values) - set(keys))
         if unknown:
             raise ModuleSpecError(f"form_values contains unknown keys: {unknown}")
@@ -243,7 +277,15 @@ class ModuleSpec:
             raise ModuleSpecError("epoch_ms must be an integer")
         exported_form = [item.export(base_id + index + 1) for index, item in enumerate(self.form)]
         item_map = {item.formKey: item for item in self.form}
-        values = {key: item_map[key].normalize_value(value) for key, value in self.form_values.items()}
+        if self.target_version == "4.0.3":
+            for item, exported in zip(self.form, exported_form, strict=True):
+                exported["defaultValue"] = item.normalize_403_value(item.defaultValue)
+                if item.type == "number":
+                    exported["min"] = _number(item.min, f"{item.formKey}.min")
+                    exported["max"] = _number(item.max, f"{item.formKey}.max")
+            values = {item.formKey: item.normalize_403_value(self.form_values.get(item.formKey, item.defaultValue)) for item in self.form}
+        else:
+            values = {key: item_map[key].normalize_value(value) for key, value in self.form_values.items()}
         return {
             "type": "CODE",
             "module": {

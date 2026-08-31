@@ -27,6 +27,65 @@
           }
         }
       }
+    },
+    {
+      "if": {
+        "properties": {
+          "target_version": {
+            "const": "4.0.3"
+          }
+        },
+        "required": [
+          "target_version"
+        ]
+      },
+      "then": {
+        "properties": {
+          "form": {
+            "minItems": 1,
+            "items": {
+              "allOf": [
+                {
+                  "properties": {
+                    "visibility": {
+                      "const": ""
+                    }
+                  },
+                  "required": [
+                    "visibility"
+                  ]
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "type": {
+                        "const": "number"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ]
+                  },
+                  "then": {
+                    "properties": {
+                      "min": {
+                        "type": "number"
+                      },
+                      "max": {
+                        "type": "number"
+                      }
+                    },
+                    "required": [
+                      "min",
+                      "max"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
     }
   ],
   "properties": {
@@ -108,7 +167,8 @@
     "target_version": {
       "enum": [
         "3.19.3",
-        "4.0.1"
+        "4.0.1",
+        "4.0.3"
       ]
     }
   },

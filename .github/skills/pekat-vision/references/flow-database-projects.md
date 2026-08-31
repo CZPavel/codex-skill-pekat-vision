@@ -97,6 +97,15 @@ Missing `isActive` is not `False`; some observed live model records omit it. A s
 - Top-level `modules.filter` is not the list of Conditional Gate nodes.
 - Report rule structure, `evalType`, and Context/GlobalData path without inventing missing semantics.
 
+Exact PEKAT 4.0.3 runtime evidence verifies only this narrow recipe: module
+type `FILTER`, one rule with `evalType="CONTEXT"`,
+`contextNode.path="/globalData/<key>"`, `valueType="boolean"`,
+`operator="EQUAL"` and a boolean value. It routed TRUE and FALSE exclusively
+in the tested fixture. This is a KNOWN RECIPE for analysis/design, not a public
+writer: strings, numbers, NOT_EQUAL, CONTAINS, NOT_CONTAINS, rectangle logic,
+multi-rule combinations and other paths/operators/types remain
+acceptance-pending or unsupported.
+
 ## Parallelism runtime design in PEKAT 4.0.1
 
 Do not treat all branch data as one generic Context merge. In controlled tests, custom branch `context["X"]` changes did not propagate through a true multi-branch join, including equal-value writes. Do not propose first/last-writer, union, consensus, timing or branch-position logic.

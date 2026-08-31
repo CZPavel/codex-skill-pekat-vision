@@ -1,5 +1,13 @@
 # Validation record
 
+## Unreleased - 2026-08-31
+
+Targeted PEKAT Assistant 3.x verified-evidence backport. The public bundle adds only an offline exact-4.0.3 CODE/Form artifact generator and a restricted-parser source-state reader. It does not include Assistant runtime architecture, private evidence, PEKAT transport or any writer.
+
+Final local validation is recorded with this change: complete pytest, compileall, official skill validation, public bundle/security checks and diff check. The source-state helper accepts only exact 4.0.3 primitive/container Pickle data and reports runtime state as unknown/not checked.
+
+---
+
 Date: 2026-08-27
 
 Target: current `pekat-vision` skill synchronized with PEKAT Agent RC1.4
@@ -16,7 +24,7 @@ Status: **PASS for static/offline skill scope**
 - Baseline default suite: `55 passed`.
 - Baseline canonical scripts compile and `git diff --check` passes.
 
-## RC1.4 knowledge synchronized
+## Historical RC1.4 knowledge synchronized (superseded where noted above)
 
 - Version routing preserves 3.18.x, 3.19.3/3.19.x, common 4.0.x, and exact
   4.0.1/4.0.3 evidence without flattening package/runtime differences.
@@ -57,9 +65,9 @@ Reviewed and unchanged:
 - `.github/skills/pekat-vision/agents/openai.yaml`;
 - existing `.pmodule`/`.ptool` fixtures.
 
-The generator advertises only 3.19.3 and 4.0.1. Exact 4.0.3 UI evidence did
-not prove a structural generator/schema delta, so no 4.0.3 target string or
-fixture was invented and `module_spec.schema.json` remains unchanged.
+Historical 2026-08-27 position: the generator advertised only 3.19.3 and
+4.0.1. This was superseded on 2026-08-31 by later exact 4.0.3 CODE/Form
+serializer acceptance; see the current Unreleased section above.
 
 ## Targeted regression coverage
 

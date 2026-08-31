@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased - 2026-08-31
+
+- Targeted PEKAT Assistant 3.x verified-evidence backport: added the standalone exact-4.0.3 CODE/Form `.ptool` generator subset and offline read-only source-state helper.
+- Added project-wide Production/Simulation negative contract, source-state mappings, narrow 4.0.3 Conditional Gate recipe, provider-switch restore guard, stale `camera.status.notAvailable` gap, and capability/evidence discipline.
+- Kept the skill standalone: no Assistant Host/UI, App Server/auth, Socket.IO/browser writer, generic DB/project writer, or PEKAT import operation was added.
+
 ## Unreleased - 2026-08-27
 
 - Synchronized the current skill with RC1.4 exact PEKAT 4.0.3 evidence while preserving 3.18.x, 3.19.3/3.19.x, common 4.0.x, and exact 4.0.1 routing.

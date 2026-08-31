@@ -15,6 +15,7 @@ description: Version-aware PEKAT VISION 3.18.x, 3.19.x, and 4.0.x work, includin
    - `.pmodule`, `.ptool`, Form runtime and generation: `references/module-format.md`
    - FLOW, `modules.db`, `modules.sort`, `database_old`: `references/flow-database-projects.md`
    - Project metadata/runtime/anatomy and `running.db` boundary: `references/project-diagnostics.md`
+   - Exact 4.0.3 stored source/provider state and safety boundaries: `references/source-state-pekat403.md`
    - Project `output.log` grouping and troubleshooting: `references/log-troubleshooting.md`
    - PEKAT 4.0.1 Code runtime and verified/importable/missing libraries: `references/code-runtime-pekat401.md`
    - Clean tested PEKAT 4.0.3 Code/ML/GPU package matrix and boundaries: `references/code-runtime-pekat403.md`
@@ -40,7 +41,7 @@ description: Version-aware PEKAT VISION 3.18.x, 3.19.x, and 4.0.x work, includin
 - Do not use GlobalData as an automatic parallel merge workaround. Exact 4.0.3 tests found that independent branch keys may survive and same-key collision was branch-order dependent, not wall-clock dependent; prefer branch-specific keys plus an explicit merge.
 - For Classifier output, treat the first `classNames` element as the reproduced PEKAT 4 winner after checking for an empty list. Never select the winner by testing whether any candidate has a wanted label; keep Detector semantics separate.
 - Normalize Form number/select values when type affects logic. Keep `defaultValue` distinct from saved current `formValues`.
-- Use `scripts/generate_code_module.py` only for its currently validated targets: 3.19.3 `.pmodule` or 4.0.1 `.ptool`. Exact 4.0.3 UI PTool round-trip evidence does not by itself extend that generator/schema. Do not generate a 3.18 export without exact evidence.
+- Use `scripts/generate_code_module.py` for 3.19.3 `.pmodule`, 4.0.1 `.ptool`, or the narrow exact 4.0.3 form-bearing CODE `.ptool` subset only. For 4.0.3 require `main(context, form)`, text/number/checkbox/select, empty-string visibility, numeric number min/max and declared `formValues`; it remains offline-only. Do not generate a 3.18 export without exact evidence.
 - For a new 4.0.1 unconditional Form field, preserve native serialization `"visibility": ""`; never emit a boolean. Generated PTool import/open/run is runtime/UI verified for one Code/Form use case, while its subsequent reexport/reimport remains open.
 - For 4.0.x dependencies, consult the exact-version matrix. `zxingcpp` and `pyzbar` were local post-install additions in the tested 4.0.1 installation and absent in clean tested 4.0.3; they are not bundled, their absence is not a vendor regression, and a PTool does not carry them. State the required import/version/ABI, distinguish a clean baseline from local modification, and retest in destination Code.
 
@@ -55,6 +56,8 @@ description: Version-aware PEKAT VISION 3.18.x, 3.19.x, and 4.0.x work, includin
 ## Runtime and industrial safety
 
 - For local troubleshooting, run `scripts/analyze_pekat_log.py` and/or `scripts/pekat_project_diagnostics.py`. Never infer readiness from `running.db`, `cameraIsRunning`, or saved provider state alone; correlate process/PID, listening port, `/ping`, inference/model readiness, and camera/provider live state.
+- For exact 4.0.3 stored source state, `running.processing` means Analyze incoming and `running.save` means Save incoming/auto capture. Folder `imageFolderWatcher.simulationMode` is Folder-only (`false` Production, `true` Simulation), not a project-wide mode. A separate project-wide Production/Simulation control is an `UNSUPPORTED_CONTRACT_GAP`; do not infer a writer from `context["production_mode"]` or readable schema.
+- Do not switch an unavailable selected physical camera to Folder unless restoration of its selection is demonstrably available. `camera.status.notAvailable` can be a stale persisted/UI state; never repair it by direct database editing.
 - Distinguish REST/SDK (running-project inference), Projects Manager/Simple TCP (lifecycle), Cross-PEKAT (between projects), GlobalData (within one PEKAT 4 project), and PEKAT Output HTTP/CMD/TCP/S7 (simple external output).
 - Use bounded timeouts and explicit error handling. Do not automatically add retries or health frameworks.
 - Keep simple current-state Cross-PEKAT master/contributor exchange as the default when sufficient. Add timestamp/heartbeat/freshness/cycle or product identifiers only for actual stale-state detection, communication-loss detection, exact pairing, or another explicit application contract.
@@ -72,3 +75,4 @@ description: Version-aware PEKAT VISION 3.18.x, 3.19.x, and 4.0.x work, includin
 - Context/Form/state and side effects are documented.
 - No credentials, private endpoint, customer identifier, or unsafe write default is present.
 - Exact-version evidence and open gates are not mixed: 4.0.3 PTool full UI round-trip and bounded public REST runtime are closed only for their tested fixtures, while untested Saver variants, 3.19.3 PModule round-trip, other runtime/HW cases, and physical acceptance stay explicit gates.
+- For consequential behavior distinguish VERIFIED CAPABILITY, KNOWN RECIPE, ACCEPTANCE-PENDING CONTRACT, TRUE GAP and INTENTIONALLY UNSUPPORTED. Read/schema evidence != runtime evidence != writer contract. When a writer contract is absent, provide design/manual guidance or the smallest bounded validation rather than inferring fields from another PEKAT version.

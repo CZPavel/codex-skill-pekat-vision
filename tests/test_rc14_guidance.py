@@ -91,14 +91,15 @@ def test_generated_database_and_gate_encoding_stay_internal_and_exact():
     assert "not a stable public API" in compact(flow)
 
 
-def test_ptool_403_roundtrip_does_not_invent_generator_schema():
+def test_ptool_403_roundtrip_has_only_the_later_accepted_generator_subset():
     module = read("references/module-format.md")
     schema = json.loads((REFS / "module_spec.schema.json").read_text(encoding="utf-8"))
     assert "import → run → export → remove → reimport → run" in module
     assert "orphan direct-import probe did not establish a universal import contract" in compact(module)
     assert '`"visibility": ""`' in module
-    assert schema["properties"]["target_version"]["enum"] == ["3.19.3", "4.0.1"]
-    assert "do not add a target string or invent schema" in module
+    assert schema["properties"]["target_version"]["enum"] == ["3.19.3", "4.0.1", "4.0.3"]
+    assert "narrow exact 4.0.3 CODE/Form subset" in module
+    assert "no generic module writer" in module
 
 
 def test_folder_scope_and_native_saver_persistence_contract():

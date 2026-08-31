@@ -62,6 +62,10 @@ listening port → `/ping` → inference/model ready → camera/provider live. A
 reachable port or successful `/ping` alone does not prove valid acquisition or
 successful evaluation.
 
+For exact 4.0.3 stored source evidence, use `source-state-pekat403.md` and its
+read-only helper. Do not infer a project-wide Production/Simulation writer from
+Folder `simulationMode`, `running.save`, or `context["production_mode"]`.
+
 ## FLOW/database route
 
 Use `scripts/analyze_flow_database.py <project-or-database.zip>` for `modules.db`,
