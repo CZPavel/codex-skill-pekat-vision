@@ -1,18 +1,24 @@
 # Changelog
 
-## Unreleased - 2026-08-31 (4.0.x family normalization)
+## 2.1.0 - 2026-09-01
+
+- Added an exact-4.0.3 standalone, read-only dataset/model inspector with image/tag inventory, completed-model train/test provenance, bounded Detector annotation-state reporting, and metadata-only model artifact inventory.
+- Backported targeted 4.0.3 guidance for Image Library boundaries, training-derived splits, Detector editor quiescence, training/model lifecycle limits, Smart Mask/SAM2, persisted Detector rectangles, and the four distinct mask contracts.
+- Preserved the public boundary: no Assistant dependency, browser/Socket.IO transport, project/database writer, dataset/tag/image writer, annotation writer, training, model activation/delete, or model-weight loading.
+
+### Included - 2026-08-31 (4.0.x family normalization)
 
 - Normalized PEKAT 4.0.x version-family handling: exact 4.0.1/4.0.3 evidence remains anchored while common PTool/Form and Gate knowledge no longer implies separate behavioral universes.
 - Removed the artificial 4.0.1/4.0.3 PTool/Form serializer split; known output versions remain allowlisted and exact package/build deltas remain exact.
 - No new PEKAT runtime discovery was performed and no live writer was added.
 
-## Unreleased - 2026-08-31
+### Included - 2026-08-31
 
 - Targeted PEKAT Assistant 3.x verified-evidence backport: added the standalone exact-4.0.3 CODE/Form `.ptool` generator subset and offline read-only source-state helper.
 - Added project-wide Production/Simulation negative contract, source-state mappings, narrow 4.0.3 Conditional Gate recipe, provider-switch restore guard, stale `camera.status.notAvailable` gap, and capability/evidence discipline.
 - Kept the skill standalone: no Assistant Host/UI, App Server/auth, Socket.IO/browser writer, generic DB/project writer, or PEKAT import operation was added.
 
-## Unreleased - 2026-08-27
+### Included - 2026-08-27
 
 - Synchronized the current skill with RC1.4 exact PEKAT 4.0.3 evidence while preserving 3.18.x, 3.19.3/3.19.x, common 4.0.x, and exact 4.0.1 routing.
 - Added the clean 4.0.3 Code/ML/GPU matrix, missing-package boundaries, and corrected `zxingcpp`/`pyzbar` local-add-on provenance.
@@ -20,7 +26,7 @@
 - Kept `module_spec.schema.json`, generator, template, REST/Projects Manager helpers, and `agents/openai.yaml` unchanged; exact 4.0.3 UI evidence does not silently extend generator support.
 - Added focused RC1.4 semantic regressions and retained the no-browser/no-Socket.IO/no-Skill-2.0 boundary.
 
-## Previous unreleased scope - 2026-08-14
+### Included - 2026-08-14
 
 - Added a three-layer PEKAT 4.0.1 Parallelism contract that separates custom Context, native result/overlay data, and the raster image.
 - Added mutually exclusive Conditional Gate routing, empty original-image pass-through, bounded geometry guidance, GlobalData concurrency gates, and machine-readable semantic regressions.

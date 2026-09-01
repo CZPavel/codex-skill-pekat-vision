@@ -1,6 +1,14 @@
 # Validation record
 
-## Unreleased - 2026-08-31
+## 2.1.0 - 2026-09-01
+
+This maintenance feature release adds one standalone exact-4.0.3 offline
+helper. Its focused tests cover valid synthetic inventory, unsupported version,
+conflicting split aliases, malformed/unsafe Pickle, and no project-file side
+effect. Full static/offline validation is recorded after the final run; it does
+not claim a PEKAT UI, runtime, training, annotation, camera, or device test.
+
+### Included baseline - 2026-08-31
 
 Targeted PEKAT Assistant 3.x verified-evidence backport and 4.0.x family normalization. The public bundle has one offline Form payload serializer for the 4.0.1/4.0.3 evidence anchors; the exact-4.0.3 CODE/Form acceptance remains a narrow target guard. The restricted-parser source-state reader remains exact 4.0.3 because retained evidence does not establish every stored mapping across the family. It does not include Assistant runtime architecture, private evidence, PEKAT transport or any writer.
 
