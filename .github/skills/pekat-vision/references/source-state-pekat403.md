@@ -13,6 +13,12 @@ This reference separates stored evidence from runtime truth. It does not authori
 
 Also inspect source/provider, `currentCamera`, `cameraStatus`, Folder path, Analyze existing, Delete images, configured port and the process/port/`/ping` evidence separately.
 
+Keep the user-visible controls distinct: **Live Stream** is editor preview,
+**Analyze incoming** controls evaluation of arriving images, **Save incoming /
+Auto Capture** controls persistence of incoming images, and manual capture is a
+separate one-shot action. Similar timing or camera use does not make these one
+writer contract. This reference supplies state interpretation only.
+
 ```text
 PROJECT SERVER RUNNING
 != CAMERA CONNECTED

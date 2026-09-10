@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.2.0 - 2026-09-10
+
+- Expanded the existing standard-library log analyzer with logger retention,
+  explicit-session detection, bounded filters, affected identities, sanitized
+  evidence, first/last occurrences, and root-candidate versus cascade output.
+- Added a standalone exact-4.0.3 training-history analyzer for family-specific
+  registries, numeric CSV/registry history, bounded JSON metadata, binary
+  inventory, and guarded descriptive interpretation without loading weights.
+- Curated portable exact-4.0.3 knowledge for native annotation-state clearing,
+  source-control semantics, FLOW lifecycle/geometry, and ML evidence limits.
+- Preserved the public boundary: no Assistant dependency, PEKAT transport,
+  browser automation, database/project writer, training/model writer, or device
+  mutation was added.
+
 ## 2.1.0 - 2026-09-01
 
 - Added an exact-4.0.3 standalone, read-only dataset/model inspector with image/tag inventory, completed-model train/test provenance, bounded Detector annotation-state reporting, and metadata-only model artifact inventory.

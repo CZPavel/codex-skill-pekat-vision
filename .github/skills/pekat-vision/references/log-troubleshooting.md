@@ -7,22 +7,32 @@ Project-local logs use the observed family:
 ```text
 <project>\logs\output.log
 <project>\logs\output.log.YYYY_MM_DD.log
+%LOCALAPPDATA%\pekat_vision\logger\<Projects-Manager-starter-daily>.log
 ```
 
 Ask the user for the relevant `output.log`, or analyze the project `logs/`
 directory when it is locally accessible. Logs can contain private paths, device
 identities, endpoints and values; summarize/redact before sharing or committing.
+The Projects Manager starter daily logs are a second exact-4.0.3 forensic source
+for lifecycle/start/port evidence. Their internal Socket.IO event API is not a
+public executable interface and is not exposed by this skill.
 
 Use the read-only standard-library helper:
 
 ```powershell
 python scripts/analyze_pekat_log.py <project>\logs\output.log
 python scripts/analyze_pekat_log.py <project>\logs --json
+python scripts/analyze_pekat_log.py <project>\logs --last-session --severity ERROR --component camera --json
 ```
 
-It groups multiline tracebacks and repeated normalized error families, reports
-first occurrence and terminal exception, and classifies likely subsystem. It
-does not modify the log or project.
+It groups multiline tracebacks and repeated normalized incident families,
+retains logger/component and first/last occurrence, recognizes explicit session
+start markers, extracts module/model/PID/port identities, separates likely root
+candidates from cascade symptoms, and supports severity, component/logger,
+incident-family and inclusive time filters. Evidence snippets redact paths,
+tokens, secrets, UUIDs and IP addresses; output paths are project-relative hints,
+not absolute workstation paths. Ranking remains heuristic. The helper does not
+modify the log or project, and an empty existing log is a valid zero-record report.
 
 ## Diagnostic method
 

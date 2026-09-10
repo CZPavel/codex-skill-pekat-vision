@@ -47,9 +47,10 @@ target UI/version; this reference does not invent ranges or defaults.
 
 The observed 4.0.3 Detector ground truth is a rectangle record. A fresh Image
 Library image can have an `ABSENT` `imageRectangles[imageId]` key. The UI can
-send `[]` after deleting a final rectangle, but retained evidence does not show
-whether the backend persists that as `PRESENT_EMPTY` or prunes it to `ABSENT`.
-That distinction is forensic read knowledge, not a safe writer recipe.
+send `[]` after deleting a final rectangle; exact 4.0.3 runtime evidence found
+that this persists as `PRESENT_EMPTY`, while the native GUI Clear action restores
+`ABSENT`. This is forensic read knowledge about two distinct native operations,
+not a public rectangle/Clear writer recipe.
 
 Detector **Smart Mask** is an editor annotation assist: user point/click ->
 segmentation proposal -> local bounding-box preview -> user-confirmed Detector

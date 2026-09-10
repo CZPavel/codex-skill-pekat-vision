@@ -9,8 +9,9 @@ Public, version-aware Codex skill for PEKAT VISION 3.18.x, 3.19.x and 4.0.x, wit
 - Generate native-compatible PEKAT 4.0.x Form metadata from the shared 4.0.1/4.0.3 evidence family and route verified sequential `context["image"]` replacement with changed resolution.
 - Route the shared observed 4.0.x sequential versus true multi-branch custom Context and mutually exclusive Conditional Gates; retain exact GlobalData/geometry deltas where stated.
 - Safely analyze a PEKAT project/database directory or ZIP: restricted non-executing protocol-4 Pickle reader, recursive `modules.sort`/Parallelism, active/disabled/soft-deleted state, Filter/Gate rules, Code dependencies/side effects, and separate `database_old` migration diff.
-- Analyze `output.log` families and project metadata/runtime state without treating `running.db` as process liveness; read exact-4.0.3 stored source state without a PEKAT connection.
+- Analyze `output.log` sessions, filtered incident families, affected identities, root candidates and cascade symptoms with sanitized evidence; inspect project metadata/runtime state without treating `running.db` as process liveness.
 - Inspect an exact-4.0.3 dataset/model project offline: image and tag inventory, model train/test provenance, bounded Detector annotation state, and small artifact metadata without loading model weights.
+- Inspect exact-4.0.3 family-specific training history and artifact metadata, and apply guarded curve interpretation without loading model weights or starting training.
 - Route the directly tested PEKAT 4.0.1 Code library matrix, `cp312`/`win_amd64` wheel compatibility, and evidence-backed third-party library staging/acceptance.
 - Route the clean tested PEKAT 4.0.3 CPython/ML/GPU matrix without conflating Torch CUDA, FAISS CPU, ONNX tooling, TensorRT Runtime-only evidence, missing packages, or locally added barcode dependencies.
 - Apply exact 4.0.3 GlobalData restart/collision, zero-survivor, Folder filename, native Image Saver persistence, PTool full UI round-trip, public REST quirks, readiness, and PEKAT-specific Basler boundaries.
@@ -52,6 +53,7 @@ python .github/skills/pekat-vision/scripts/analyze_pekat_log.py <project-or-logs
 python .github/skills/pekat-vision/scripts/pekat_project_diagnostics.py <project> --json
 python .github/skills/pekat-vision/scripts/analyze_source_state_403.py <project>
 python .github/skills/pekat-vision/scripts/inspect_dataset_model.py <project> --output dataset-model-report.json
+python .github/skills/pekat-vision/scripts/analyze_training_history.py <project> --family detector --model-id 42
 python .github/skills/pekat-vision/scripts/check_pekat_library_compat.py --pekat-version 4.0.1 --package scipy
 ```
 
@@ -66,7 +68,7 @@ Automated validation never starts PEKAT or writes to a project, PLC, IO-Link dev
 - REST cases beyond the exact tested 4.0.3 public surface, SDK release matrix, Projects Manager repeated readiness/stuck lifecycle, and Cross-PEKAT regression;
 - branch-local A1→A2 propagation, generalized native-result merge, GlobalData patterns beyond the exact 4.0.3 collision result, and arbitrary geometry remapping;
 - native Image Saver OK/NOK, overlay/rectangle, heatmap, and exact source-versus-processed variants;
-- annotation/training/model lifecycle writers: Smart Mask backend behavior, Detector rectangle absent-key restoration, created training-model identity, model activation/delete cleanup, and stop-as-rollback remain intentionally unsupported;
+- annotation/training/model lifecycle writers: Smart Mask backend behavior, created training-model identity, model activation/delete cleanup, and stop-as-rollback remain intentionally unsupported. Exact native Detector final-delete `PRESENT_EMPTY` versus GUI Clear `ABSENT` behavior is read knowledge, not a writer;
 - exact physical camera/IO-Link/vision acceptance.
 
 Static/schema/AST tests are not described as PEKAT runtime or UI proof.

@@ -90,6 +90,11 @@ soft-deleted/historical:
 
 Missing `isActive` is not `False`; some observed live model records omit it. A soft-deleted record may still contain `isActive=True`.
 
+Exact 4.0.3 native lifecycle evidence distinguishes recoverable soft deletion
+and Restore from permanent deletion. Preserve identity/topology evidence when
+describing Restore; do not infer a public delete/restore payload or equate a
+soft-deleted registry row with an active FLOW node.
+
 ## Filter / Conditional Gate
 
 - PEKAT 3.x Filter and PEKAT 4 Conditional Gate can both be stored as module type `FILTER`.
@@ -128,6 +133,18 @@ JOIN
 This is a practical original-image pass-through pattern. It also creates a true multi-branch join for custom Context, so branch custom values should not be expected after the join. A disabled/no-op Code branch may similarly contribute an unchanged pass-through state and is not equivalent to Gate FALSE; do not claim its internal mechanism.
 
 Prefer PEKAT-native `result` for parallel OK/NOK and native detections/classes/heatmaps for result visualization. They do not follow the tested custom-Context rule. Bounding boxes/heatmaps are overlay metadata, not automatically drawn into the raster. Standard crop mapping was practically observed; verify or explicitly transform coordinates after rotation, Unifier, custom resize or warp.
+
+Additional exact-4.0.3 runtime semantics available for design/interpretation:
+
+- PREPROCESS `CUT` changes the downstream raster/coordinate frame.
+- Static Mask remains a native mask operation, distinct from Detector Smart Mask.
+- Unifier accepts one object at a time in the established native contract.
+- X Line Find is not restricted to a single object family.
+- rectangle-to-line distance uses Euclidean geometry in the tested contract.
+
+These are knowledge-level constraints, not internal event names, schemas or
+public FLOW writers. Revalidate downstream geometry whenever a parent transform
+changes coordinates.
 
 Do not replace this simple topology with a GlobalData state machine merely to merge branches. In exact 4.0.3, independent branch keys could survive and a same-key collision was deterministic by branch order, not wall-clock completion. Use branch-specific keys plus explicit merge; remember that GlobalData resets with the project-server process and can otherwise become stale.
 

@@ -1,5 +1,15 @@
 # Validation record
 
+## 2.2.0 - 2026-09-10
+
+This maintenance release extends only public-safe, portable READ analysis and
+knowledge. Synthetic tests cover multiline logs, UTF-8 BOM, explicit sessions,
+filters, redaction, identity extraction, empty logs, exact-version rejection,
+safe training registries/CSV/JSON, binary inventory-only behavior and guarded
+curve classifications. Final automated counts are recorded in
+`RELEASE_REPORT_2.2.0.md`; no PEKAT UI/runtime, training, project write, camera
+or device operation was performed.
+
 ## 2.1.0 - 2026-09-01
 
 This maintenance feature release adds one standalone exact-4.0.3 offline
