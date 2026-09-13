@@ -1,5 +1,12 @@
 # Validation record
 
+## 2.2.1 - 2026-09-13
+
+Knowledge/skill maintenance only; no new PEKAT runtime, project, device or
+database experiment. Validate skill metadata, complete existing offline tests,
+representative routing coverage, and repository diff; no executable contract
+or helper changed.
+
 ## 2.2.0 - 2026-09-10
 
 This maintenance release extends only public-safe, portable READ analysis and

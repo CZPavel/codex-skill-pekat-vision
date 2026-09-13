@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.2.1 - 2026-09-13
+
+- Preserved all knowledge/offline routes while adding a compact positive
+  capability map and replacing blanket write restrictions with proportionate
+  disposable-project versus high-impact industrial guidance.
+- Clarified exact-4.0.3 API/Analyze Incoming runtime prerequisites and
+  backported the embedded Cross-PEKAT GlobalData signatures and bounded A-to-B
+  evidence without claiming external SDK or reconnect support.
+- Updated the default prompt toward effective, version-correct adaptation.
+
 ## 2.2.0 - 2026-09-10
 
 - Expanded the existing standard-library log analyzer with logger retention,

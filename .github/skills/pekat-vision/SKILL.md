@@ -5,6 +5,18 @@ description: Version-aware PEKAT VISION 3.18.x, 3.19.x, and 4.0.x work, includin
 
 # PEKAT VISION workflow
 
+## What this skill helps with
+
+Version-correct project/FLOW/Context/GlobalData design; Code, Form, PTool and
+PModule generation; source/API/Folder runtime and REST/SDK/Projects Manager;
+Detector, Classifier, OCR, Anomaly and Supervised interpretation; offline
+project, dataset, model, log and training-history diagnostics; Cross-PEKAT and
+native Output selection; Basler/Baumer cameras, IFM IO-Link, MX/edge
+maintenance and complete vision-system design. Use the topic's primary
+reference first, then exact model/version evidence; open deeper historical
+sources only when a needed detail is missing. This is knowledge/offline tooling,
+not PEKAT Assistant Core execution authority.
+
 1. Establish the target version or infer it only from explicit project/export metadata. Route `3.18.x`, `3.19.x` (exact `3.19.3`), and the common `4.0.x` contract with exact `4.0.1`/`4.0.3` evidence; never flatten exact-version differences or infer a version from one legacy DB field.
    For `4.0.x`, check the retained family contract first, then overlay an actual documented patch delta. Exact runtime/UI versions are evidence anchors, not automatically separate behavioral contracts. A target patch number alone does not justify a new experiment; a higher-order family, changed interface/schema/HW contract, documented vendor change or observed regression does.
 2. For a failure, identify project/version, symptom and relevant log session before changing FLOW. Separate server, camera, model, filesystem and evaluation states.
@@ -71,7 +83,7 @@ description: Version-aware PEKAT VISION 3.18.x, 3.19.x, and 4.0.x work, includin
 - For a new library, identify exact version/ABI, inspect pure/native wheel and dependencies, stage only through an evidence-backed approved method, then require direct Code import and preferably a minimal functional call. Never auto-install during diagnosis.
 - Prefer native Image Saver when feature-equivalent. In exact 4.0.3, `ALL` + local + `by_days` + `image_only` persisted PNGs only when the root already existed; HTTP/context success did not prove filesystem persistence and a missing root could be log-only.
 - Treat internal `inspection:getContext`/`inspection:getFlow` as potentially evaluation-triggering, not behaviorally passive, when FLOW has Code, GlobalData, or I/O side effects. Do not promote internal Socket.IO or browser-driven project authoring into the normal workflow.
-- Default Projects Manager, PLC, IO-Link, camera, and project changes to read-only/dry-run. Require explicit approval, exact mapping/manual, backup, isolated target, readback, and rollback before writes.
+- Use documented or verified contracts as the working baseline. On a user-selected disposable project, adapt ordinary setup/configuration mismatches and verify reversible changes with proportionate readback; a native error is a diagnostic observation, not an automatic stop. For production or high-impact industrial changes, establish target identity and enough evidence to avoid collateral. Require explicit authorization and a suitable recovery path for firmware, persistent network identity, PLC/actuator outputs, credentials/security, or destructive production changes. Back up only when it materially reduces risk; stop for a destructive unknown, real collateral risk, or missing mandatory hardware/security boundary.
 - Use `pekat-vision` for PEKAT-side integration; route deep pylon/camera work to `basler-cameras` and exact IODD/device work to `ifm-io-link` when available.
 - If the problem is actually FOV, px/mm, optics, DoF, blur, lighting, trigger, line rate, dataset, false accept/reject, or repeatability, solve that physical/measurement constraint before prescribing a complex FLOW.
 

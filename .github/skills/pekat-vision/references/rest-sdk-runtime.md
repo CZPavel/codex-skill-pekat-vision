@@ -55,6 +55,12 @@ The tested public REST surface confirmed:
 - `ContextBase64utf`, `context_in_body`, `ImageLen`, and exact string `data`
   in their tested request/response contracts.
 
+For exact 4.0.3, successful `POST /analyze_image` evaluation requires a
+running project, API source/provider and Analyze Incoming ON. It does not
+require a physical camera. Authoring FLOW may require Analyze Incoming OFF;
+switching between authoring and evaluation states is an ordinary reversible
+project workflow, with state readback and restoration as appropriate.
+
 Keep parameter placement/encoding exact to the target endpoint rather than
 mixing these named fields into one invented universal payload. Runtime quirks:
 
@@ -82,7 +88,11 @@ Projects Manager owns lifecycle; it is not the image-analysis API. Exact-version
 - external application owns lifecycle; or
 - explicit hybrid with one authority per transition.
 
-Default to read-only status/listing. Require exact protocol evidence and approval before a lifecycle mutation. Avoid adding a state machine/watchdog unless the operating requirement calls for one.
+Use exact protocol evidence and proportionate readiness/readback for lifecycle
+mutations. On a selected disposable project, starting or stopping to meet the
+requested workflow is ordinary setup; production lifecycle changes need clear
+target identity and operating ownership. Avoid adding a state machine/watchdog
+unless the operating requirement calls for one.
 
 For readiness, neither `running.db`, `cameraIsRunning`, nor saved provider state
 is sufficient. Correlate process/PID → listening port → `/ping` →
@@ -93,6 +103,29 @@ do not use restart as universal recovery.
 ## Cross-PEKAT
 
 Use Cross-PEKAT only for explicit project-to-project communication. Observed practical calls include client registration and asynchronous GlobalData updates. They create edges outside local FLOW and need endpoint, key/type, writer ownership, consumer behavior, and failure policy.
+
+Exact PEKAT 4.0.3 embedded Code runtime inspection found the installed
+`pekat_communication.cp312-win_amd64.pyd` (compiled CPython 3.12 extension)
+and these `PEKAT` methods:
+
+```python
+add_client_to_pekat(host: str, port: int, client_name: str) -> None
+update_global_data(client_name: str, json_dict: dict, *, ip: None | str = None, port: int | None = None) -> Any
+update_global_data_async(client_name: str, json_dict: dict, *, ip: None | str = None, port: int | None = None) -> None
+get_global_data(client_name: str, key: str, *, ip: None | str = None, port: int | None = None) -> Any
+```
+
+The exact 4.0.3 disposable-project A-to-B GlobalData happy path passed for
+both synchronous update/readback and asynchronous update with bounded polling.
+`get_global_data` traversed `requests`/`urllib3` in one bounded profile, but
+the wire endpoint and update transport were not independently captured.
+Standalone external CPython use was not verified on the tested host (only
+Python 3.11/3.13 were available); reconnect/error behavior remains open. A
+registered alias identifies the target host/port, so revalidate it if a port
+is reassigned. These observations do not make this extension a generic
+external SDK or establish production reconnect guarantees. Some earlier
+generic examples use shorter positional names/signatures; prefer the exact
+embedded introspection above for this installation.
 
 Simple non-critical transfer can remain simple. For a critical persistent remote result, define freshness only as needed (for example timestamp, sequence, validity, or reset ownership); do not impose all mechanisms on every transfer. Test disconnect/reconnect and stale behavior before production claims.
 
