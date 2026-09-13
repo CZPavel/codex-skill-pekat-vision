@@ -7,10 +7,13 @@ description: Version-aware PEKAT VISION 3.18.x, 3.19.x, and 4.0.x work, includin
 
 ## What this skill helps with
 
-Version-correct project/FLOW/Context/GlobalData design; Code, Form, PTool and
+Version-correct project/FLOW/Context/GlobalData design, including PREPROCESS
+CUT and downstream coordinate frames; Code, Form, PTool and
 PModule generation; source/API/Folder runtime and REST/SDK/Projects Manager;
 Detector, Classifier, OCR, Anomaly and Supervised interpretation; offline
-project, dataset, model, log and training-history diagnostics; Cross-PEKAT and
+project, dataset, model, log and training-history diagnostics; Detector COCO
+dataset portability versus PEKAT-native trained-model package transfer as
+distinct exact-version contracts; Cross-PEKAT and
 native Output selection; Basler/Baumer cameras, IFM IO-Link, MX/edge
 maintenance and complete vision-system design. Use the topic's primary
 reference first, then exact model/version evidence; open deeper historical
