@@ -234,3 +234,40 @@ Priority order:
 Do not create a universal Pickle writer. Before any DB mutation require a copy, version/schema evidence, deterministic diff, isolated import/open test, rollback, and explicit approval.
 
 Known gates: clean 3.18 fixture, full type-specific schema across releases, branch-local A1→A2 custom propagation, generalized native-result merge, untested GlobalData collision patterns beyond the exact 4.0.3 result, arbitrary geometry remap, every upgrade route, remaining Saver variants, and universal DB generation.
+
+
+## User-Guided FLOW Decomposition (design advice)
+
+Evidence: user-requested general design guidance, statically reviewed; no new
+PEKAT runtime acceptance and no authoring/writer authority. The canonical PEKAT
+Assistant remains the source of current executable capabilities; this legacy
+knowledge does not implement its candidate validator or Core tools.
+
+Start with the inspection goal and the user's functional product hierarchy,
+then dependencies, image domains, native/Code operations, optional branching,
+results and final visualization. Preserve supplied functional groups when
+practical rather than grouping automatically by module type. Without a supplied
+hierarchy, propose a short useful decomposition from known requirements without
+mandatory clarification or approval. Explain any departure using a concrete
+shared-localization/inference dependency, transform, latency/copy cost, module
+count, unknown join behavior or suitable native feature.
+
+Keep observed topology separate from proposed alternatives. For a synthetic
+assembly, one localization/inference producer can feed two inspections; only the
+inspection needing different preprocessing receives that transform. Do not
+repeat inference merely to match two functional groups. Consider Parallelism
+and native Conditional Gate where feature-equivalent to auxiliary Code, including
+simple decisions, image restoration or result forwarding. Weigh synchronization,
+image copies, latency, module count and readability. Do not maximize branches or
+invent an empty original-image branch without an exact-version contract.
+
+For every candidate identify the source raster, each transform and coordinate
+frame, branch input raster, join output raster, final displayed raster, attributed
+native results, custom Context, overlay rendering, collector and report. Result
+aggregation never proves image merging or that overlays are raster pixels. A
+request for original-image visualization needs an explicit original raster and
+result/geometry mapping; retaining an image alone does not prove correct overlays.
+Keep unknown native image/result/Context joins as `UNVERIFIED_IMAGE_JOIN` with the
+smallest isolated exact-version experiment described, not executed. Static design
+validation is not runtime equivalence; preserve existing version-specific evidence
+and open geometry/native-result gates.

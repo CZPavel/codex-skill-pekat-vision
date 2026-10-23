@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased - 2026-10-23
+
+- Added general User-Guided FLOW Decomposition, native-first branching tradeoffs
+  and independent image/result/overlay lineage guidance. Preserved exact-version
+  gates and canonical Assistant routing; no executable capability or release.
+
 ## 2.2.1 - 2026-09-13
 
 - Preserved all knowledge/offline routes while adding a compact positive

@@ -1,5 +1,13 @@
 # Validation record
 
+## Unreleased guidance - 2026-10-23
+
+Original general design prose and a synthetic assembly example only; no copied
+vendor text, customer data, endpoint, raw project or proprietary artifact.
+No runtime, UI, hardware or writer acceptance is claimed. Existing exact-version
+gates remain unchanged. Local results: official skill validator PASS; `python -m pytest -q` 104 PASS;
+`git diff --check` PASS. No runtime/UI/HW path exercised.
+
 ## 2.2.1 - 2026-09-13
 
 Knowledge/skill maintenance only; no new PEKAT runtime, project, device or
