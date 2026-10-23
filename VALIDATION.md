@@ -148,3 +148,9 @@ STARTED**.
 - REST variants beyond the tested 4.0.3 surface, current SDK matrix, Projects
   Manager repeated readiness/stuck lifecycle, and Cross-PEKAT regression;
 - physical hardware and production vision acceptance.
+
+## Ecosystem maintenance — 2026-10-23
+
+Current capability selection and execution belong to `pekat-assistant`. Historical negative observations remain dated knowledge; later bounded support must be checked against current Assistant contracts. This maintenance adds no second router, writer, runtime test or hosted deployment.
+
+Maintenance validation: official skill quick_validate PASS; 104 offline pytest tests PASS. No runtime/HW test.
