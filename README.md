@@ -72,3 +72,7 @@ Automated validation never starts PEKAT or writes to a project, PLC, IO-Link dev
 - exact physical camera/IO-Link/vision acceptance.
 
 Static/schema/AST tests are not described as PEKAT runtime or UI proof.
+
+## Ecosystem maintenance — 2026-10-23
+
+Current capability selection and execution belong to `pekat-assistant`. Historical negative observations remain dated knowledge; later bounded support must be checked against current Assistant contracts. This maintenance adds no second router, writer, runtime test or hosted deployment.

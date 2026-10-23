@@ -86,3 +86,7 @@
 ## 1.0.0 - 2026-02-15
 
 - Initial standalone PEKAT VISION skill.
+
+## Ecosystem maintenance — 2026-10-23
+
+Current capability selection and execution belong to `pekat-assistant`. Historical negative observations remain dated knowledge; later bounded support must be checked against current Assistant contracts. This maintenance adds no second router, writer, runtime test or hosted deployment.

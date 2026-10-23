@@ -5,6 +5,12 @@ description: Version-aware PEKAT VISION 3.18.x, 3.19.x, and 4.0.x work, includin
 
 # PEKAT VISION workflow
 
+## Current Assistant boundary — 2026-10-23
+
+For current capability selection or execution, defer to `pekat-assistant` and its current exact-version promotion registry. This historical package remains knowledge/offline tooling and must not become a second active router. Its older negative writer statements describe this package and their dated evidence, not a blanket prohibition on later accepted Assistant capabilities.
+
+Later exact-4.0.3 Assistant subsets include ID-specific Detector edits, existing Brightness/Contrast edits, OCR region authoring and bounded Boolean/Numeric/Groups/integer COUNT Gate variants. Consult current Assistant contracts; no implementation or authority is imported here. Prefer closed workflows; intent recognition is read-only. Apply supersession only within matching version/contract/evidence scope, retain history and do_not_repeat, and disclose cycles/conflicts. Arbitrary interactive OCR drag, generic Stop/delete, UNVERIFIED_IMAGE_JOIN and atomic topology undo remain gaps.
+
 ## What this skill helps with
 
 Version-correct project/FLOW/Context/GlobalData design, including PREPROCESS
