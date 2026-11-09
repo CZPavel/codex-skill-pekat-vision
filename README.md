@@ -76,3 +76,8 @@ Static/schema/AST tests are not described as PEKAT runtime or UI proof.
 ## Ecosystem maintenance — 2026-10-23
 
 Current capability selection and execution belong to `pekat-assistant`. Historical negative observations remain dated knowledge; later bounded support must be checked against current Assistant contracts. This maintenance adds no second router, writer, runtime test or hosted deployment.
+
+
+## November 2026 public usage guide
+
+The [public capability and usage guide](.github/skills/pekat-vision/references/public-usage-and-roadmap.md) maps practical user requests to the shipped reference material and offline scripts, explains their exact-version limits and records the next development directions. This skill is the standalone technical/offline route; [PEKAT Assistant](https://github.com/CZPavel/PEKAT-Assistant) is the broader public advisory edition. Neither installation includes the separately developed private Assistant Core or Windows application.
