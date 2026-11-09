@@ -142,7 +142,7 @@ def test_no_skill2_socketio_authoring_or_general_framework_promotion():
     rest = read("references/rest-sdk-runtime.md")
     script_names = {path.name.lower() for path in (SKILL / "scripts").glob("*.py")}
     assert "Skill 2.0 orchestration" in skill
-    assert "Do not promote internal Socket.IO" in skill
+    assert "Avoid undocumented live control paths" in skill
     assert "not a supported public API" in compact(rest)
     assert "Do not add browser/Socket.IO FLOW authoring" in rest
     assert not any("socket" in name or "browser" in name or "playwright" in name for name in script_names)

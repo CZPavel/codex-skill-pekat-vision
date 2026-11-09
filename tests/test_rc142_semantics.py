@@ -53,4 +53,4 @@ def test_cross_pekat_robustness_is_requirement_driven():
 def test_skill2_and_live_socketio_remain_excluded():
     text = read("SKILL.md")
     assert "Skill 2.0 orchestration" in text
-    assert "Do not promote internal Socket.IO" in text
+    assert "Avoid undocumented live control paths" in text

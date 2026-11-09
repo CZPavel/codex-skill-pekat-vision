@@ -1,5 +1,14 @@
 # Validation record
 
+## Unreleased public plugin routing - 2026-11-09
+
+Documentation/routing only; the existing standalone scripts and exact-version
+contracts are unchanged. Local official skill validator: PASS; full offline suite:
+104 passed (including bundle/privacy tests); compileall and `git diff --check`:
+PASS. An isolated local copy of the canonical skill also passed the validator.
+The GitHub branch installer and companion plugin links require the published
+branches; no PEKAT runtime, UI, hardware or live writer was tested.
+
 ## Unreleased guidance - 2026-10-23
 
 Original general design prose and a synthetic assembly example only; no copied

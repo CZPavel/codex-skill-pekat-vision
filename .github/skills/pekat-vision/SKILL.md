@@ -1,15 +1,15 @@
 ---
 name: pekat-vision
-description: Version-aware PEKAT VISION 3.18.x, 3.19.x, and 4.0.x work, including exact 3.19.3, 4.0.1, and 4.0.3 evidence, for Code, Context/GlobalData, Form Editor, .pmodule/.ptool, FLOW/database analysis, project/log diagnostics, Code libraries, REST/SDK, Projects Manager/Simple TCP, Cross-PEKAT, Outputs, cameras, PLC/IO-Link, and troubleshooting. Use when Codex must design, generate, analyze, integrate, diagnose, migrate, or safely operate on a PEKAT application or project. Do not use for unrelated frontend work, internal Socket.IO/browser authoring, Skill 2.0 orchestration, or unapproved live/device/project writes.
+description: Version-aware PEKAT VISION 3.18.x, 3.19.x, and 4.0.x work, including exact 3.19.3, 4.0.1, and 4.0.3 evidence, for Code, Context/GlobalData, Form Editor, .pmodule/.ptool, supplied-project/FLOW analysis, project/log diagnostics, Code libraries, REST/SDK, Projects Manager/Simple TCP, Cross-PEKAT, Outputs, cameras, PLC/IO-Link, and troubleshooting. Use when Codex must design, generate, analyze, integrate, diagnose, migrate, or safely operate on a PEKAT application or project. Do not use for unrelated frontend work, unsupported live authoring, Skill 2.0 orchestration, or unapproved live/device/project writes.
 ---
 
 # PEKAT VISION workflow
 
 ## Current Assistant boundary — 2026-10-23
 
-For current capability selection or execution, defer to `pekat-assistant` and its current exact-version promotion registry. This historical package remains knowledge/offline tooling and must not become a second active router. Its older negative writer statements describe this package and their dated evidence, not a blanket prohibition on later accepted Assistant capabilities.
+The public [PEKAT Assistant plugin](https://github.com/CZPavel/PEKAT-Assistant/tree/main/plugins/pekat-assistant) provides the general advisory route. This standalone skill remains the source for its bundled offline tools and version-scoped technical references. The public plugin does not install or grant access to the separately developed private Assistant Core, its registry, or live execution. When that Core is actually available, check its current exact-version contracts for its capabilities; do not assume it is installed.
 
-Later exact-4.0.3 Assistant subsets include ID-specific Detector edits, existing Brightness/Contrast edits, OCR region authoring and bounded Boolean/Numeric/Groups/integer COUNT Gate variants. Consult current Assistant contracts; no implementation or authority is imported here. Prefer closed workflows; intent recognition is read-only. Apply supersession only within matching version/contract/evidence scope, retain history and do_not_repeat, and disclose cycles/conflicts. Arbitrary interactive OCR drag, generic Stop/delete, UNVERIFIED_IMAGE_JOIN and atomic topology undo remain gaps.
+Later exact-4.0.3 Assistant subsets include ID-specific Detector edits, existing Brightness/Contrast edits, OCR region authoring and bounded Boolean/Numeric/Groups/integer COUNT Gate variants. These are historical statements about a separately developed Core, not capabilities shipped by the public plugin or this skill. Consult its current contracts only when it is actually available; no implementation or authority is imported here. Prefer closed workflows; intent recognition is read-only. Apply supersession only within matching version/contract/evidence scope, retain history and do_not_repeat, and disclose cycles/conflicts. Arbitrary interactive OCR drag, generic Stop/delete, UNVERIFIED_IMAGE_JOIN and atomic topology undo remain gaps.
 
 ## What this skill helps with
 
@@ -33,13 +33,13 @@ not PEKAT Assistant Core execution authority.
    For exact 4.0.3 dataset, tag, Detector-model, artifact, or serialized annotation questions, use the packaged read-only `scripts/inspect_dataset_model.py` before writing an ad-hoc parser; then read `references/dataset-model-inspection.md`. It is analysis only and never authorizes image/tag/annotation/training/model lifecycle writes.
    For exact 4.0.3 training history or curve interpretation, use `scripts/analyze_training_history.py` and `references/training-history-diagnostics.md`. Keep Detector, Classifier, Supervised, Anomaly/Unsupervised and OCR evidence separate; never load weights or infer a training/model writer.
 3. Before redesigning an existing project, reconstruct the complete relevant FLOW and its behavioral contract, including continuation after joins and empty-branch roles. State **MUST PRESERVE** and **INTENTIONAL CHANGE**; preserve observable I/O, filenames/folders, compression, annotations, Form controls and side effects. Classify custom complexity as required behavior, relevant compatibility, proven redundancy or actual overengineering before removing it.
-   For complex FLOW, preserve the user's functional hierarchy or explain a concrete dependency/cost reason to change it. Propose a useful hierarchy when absent without mandatory questions. Keep shared inference single, weigh native Gate/Parallelism against Code, and trace raster, transforms, results and overlays independently; see `references/flow-database-projects.md` (User-Guided FLOW Decomposition). This legacy skill does not supersede `pekat-assistant` for current Core execution.
+   For complex FLOW, preserve the user's functional hierarchy or explain a concrete dependency/cost reason to change it. Propose a useful hierarchy when absent without mandatory questions. Keep shared inference single, weigh native Gate/Parallelism against Code, and trace raster, transforms, results and overlays independently; see `references/flow-database-projects.md` (User-Guided FLOW Decomposition). This offline skill does not provide Core execution.
 4. Choose the simplest working route: native PEKAT feature, simple FLOW, NumPy/OpenCV Code, specialized library, then heavy ML/new dependency only when justified. Replace custom behavior with a native feature only after all required observable behavior is feature-equivalent or the user accepts the change.
 5. State the evidence class for consequential claims: documented, runtime/UI tested, observed/static, practical evidence, or unknown/open gate. Do not request a test that merely reconfirms already established exact-version behavior; test only a material unresolved dimension.
 6. Read only the relevant reference:
    - Version, Context, Parallelism data layers, `result`/`exit`, GlobalData, migration: `references/version-context.md`
    - `.pmodule`, `.ptool`, Form runtime and generation: `references/module-format.md`
-   - FLOW, `modules.db`, `modules.sort`, `database_old`: `references/flow-database-projects.md`
+   - Effective FLOW order, branches and supplied-project review: `references/flow-database-projects.md`
    - Project metadata/runtime/anatomy and `running.db` boundary: `references/project-diagnostics.md`
    - Exact 4.0.3 stored source/provider state and safety boundaries: `references/source-state-pekat403.md`
    - Project `output.log` grouping and troubleshooting: `references/log-troubleshooting.md`
@@ -72,27 +72,26 @@ not PEKAT Assistant Core execution authority.
 - For a new 4.0.1 unconditional Form field, preserve native serialization `"visibility": ""`; never emit a boolean. Generated PTool import/open/run is runtime/UI verified for one Code/Form use case, while its subsequent reexport/reimport remains open.
 - For 4.0.x dependencies, consult the exact-version matrix. `zxingcpp` and `pyzbar` were local post-install additions in the tested 4.0.1 installation and absent in clean tested 4.0.3; they are not bundled, their absence is not a vendor regression, and a PTool does not carry them. State the required import/version/ABI, distinguish a clean baseline from local modification, and retest in destination Code.
 
-## FLOW/database contract
+## Supplied-project FLOW review
 
-- For a project or database ZIP, run `scripts/analyze_flow_database.py <path> [--output report.json]`. It reads only primitive/container Pickle protocol-4 opcodes and rejects object construction/execution opcodes; never replace it with `pickle.load()` on user data.
-- Treat `modules.items` as the registry and `modules.sort` as observed live topology. Parse integers as module IDs, nested list nodes as Parallelism, their items as branches, and `[]` as an empty branch. This is observed project evidence, not a public vendor API.
-- Generated 4.0.1 `modules.db` evidence covers recursive/nested topology plus Code, Detector, OCR, internal `FILTER`, Mask, structural Image Saver, and explicit `modelId`. Keep direct DB generation exact-version, internal, fixture-backed, and outside the normal public authoring route. For that exact Gate fixture, `classname = local_class_id * 2^42 + source_module_id`; do not reverse the IDs or generalize the encoding.
-- Active candidate: ID in `sort`, `softDeletedDate is None`, and `isActive` not explicitly `False`. Missing `isActive` is not disabled. Report disabled and soft-deleted records separately.
-- Analyze `database_old` separately as historical/pre-upgrade evidence, not live FLOW. Prefer analysis/dry-run/patch design before any experimental DB writer.
+- For a user-authorized project folder or export, run the bundled offline analyzer, then read references/flow-database-projects.md for exact target-version interpretation. It must not execute project Code or perform live changes.
+- Explain effective FLOW order, branches, inactive/removed elements, dependencies and potential side effects. Treat the observable execution path separately from items merely included in an export.
+- Review older-version or pre-upgrade content as comparison evidence, not the current running state. Preserve user-visible behavior before proposing modernization.
+- This skill supplies knowledge, diagnostic outputs and Code/module drafts. It does not grant arbitrary project-editing authority or guarantee runtime behavior without an exact-version test.
 
 ## Runtime and industrial safety
 
 - For local troubleshooting, run `scripts/analyze_pekat_log.py` and/or `scripts/pekat_project_diagnostics.py`. Never infer readiness from `running.db`, `cameraIsRunning`, or saved provider state alone; correlate process/PID, listening port, `/ping`, inference/model readiness, and camera/provider live state.
-- For exact 4.0.3 stored source state, `running.processing` means Analyze incoming and `running.save` means Save incoming/auto capture. Folder `imageFolderWatcher.simulationMode` is Folder-only (`false` Production, `true` Simulation), not a project-wide mode. A separate project-wide Production/Simulation control is an `UNSUPPORTED_CONTRACT_GAP`; do not infer a writer from `context["production_mode"]` or readable schema.
-- Keep four mask concepts separate: static/manual FLOW `MASK` (`heatmap=false`, compressed RLE) and result-driven FLOW `MASK` (`heatmap=true`, `rle=null`, incoming `detectedRectangles`) are historical exact-4.0.1 runtime modules; Detector Smart Mask is a 4.0.3 editor annotation assist; Supervised mask is another annotation/training family. Smart Mask/SAM2 packaging or UI naming is not backend proof and does not authorize an annotation writer.
+- Analyze Incoming and Save Incoming are separate settings in the observed 4.0.3 project. Folder simulation is a source-specific mode; do not treat it as a universal project-wide switch. Context execution flags are not proof that a user-facing configuration change is supported.
+- Keep static FLOW masks, result-driven FLOW masking, Detector Smart Mask suggestions and Supervised training masks separate. Their purpose and data lifetime differ. UI terminology or a successful suggestion does not imply a generalized annotation writer.
 - Completed-model `trainingImages` and `testImages` are training-derived provenance, not editable train/test memberships. For standard 4.0.3 Detector GUI training, enter the Detector editor and Training tab with Live Stream turned off; turning off Analyze Incoming is USER_OBSERVED workflow choreography, not proof that a training-start backend rejects it.
-- Do not switch an unavailable selected physical camera to Folder unless restoration of its selection is demonstrably available. `camera.status.notAvailable` can be a stale persisted/UI state; never repair it by direct database editing.
+- Do not change the selected physical camera or source merely to make a diagnostic work. Differentiate stored configuration from live device availability and require a safe recovery plan for any approved change.
 - Distinguish REST/SDK (running-project inference), Projects Manager/Simple TCP (lifecycle), Cross-PEKAT (between projects), GlobalData (within one PEKAT 4 project), and PEKAT Output HTTP/CMD/TCP/S7 (simple external output).
 - Use bounded timeouts and explicit error handling. Do not automatically add retries or health frameworks.
 - Keep simple current-state Cross-PEKAT master/contributor exchange as the default when sufficient. Add timestamp/heartbeat/freshness/cycle or product identifiers only for actual stale-state detection, communication-loss detection, exact pairing, or another explicit application contract.
 - For a new library, identify exact version/ABI, inspect pure/native wheel and dependencies, stage only through an evidence-backed approved method, then require direct Code import and preferably a minimal functional call. Never auto-install during diagnosis.
 - Prefer native Image Saver when feature-equivalent. In exact 4.0.3, `ALL` + local + `by_days` + `image_only` persisted PNGs only when the root already existed; HTTP/context success did not prove filesystem persistence and a missing root could be log-only.
-- Treat internal `inspection:getContext`/`inspection:getFlow` as potentially evaluation-triggering, not behaviorally passive, when FLOW has Code, GlobalData, or I/O side effects. Do not promote internal Socket.IO or browser-driven project authoring into the normal workflow.
+- A UI preview or inspection may evaluate FLOW and trigger Code and external effects; it is not automatically passive. Avoid undocumented live control paths and prefer available approved interfaces.
 - Use documented or verified contracts as the working baseline. On a user-selected disposable project, adapt ordinary setup/configuration mismatches and verify reversible changes with proportionate readback; a native error is a diagnostic observation, not an automatic stop. For production or high-impact industrial changes, establish target identity and enough evidence to avoid collateral. Require explicit authorization and a suitable recovery path for firmware, persistent network identity, PLC/actuator outputs, credentials/security, or destructive production changes. Back up only when it materially reduces risk; stop for a destructive unknown, real collateral risk, or missing mandatory hardware/security boundary.
 - Use `pekat-vision` for PEKAT-side integration; route deep pylon/camera work to `basler-cameras` and exact IODD/device work to `ifm-io-link` when available.
 - If the problem is actually FOV, px/mm, optics, DoF, blur, lighting, trigger, line rate, dataset, false accept/reject, or repeatability, solve that physical/measurement constraint before prescribing a complex FLOW.
@@ -100,9 +99,14 @@ not PEKAT Assistant Core execution authority.
 ## Delivery check
 
 - Version and evidence limits are explicit.
-- Code/JSON/Pickle parsing is bounded and tested; no user Code or Pickle callable executes.
+- Offline inspection is bounded and must not execute untrusted supplied Code or load model weights.
 - Context/Form/state and side effects are documented.
 - No credentials, private endpoint, customer identifier, or unsafe write default is present.
 - Exact-version evidence and open gates are not mixed: 4.0.3 PTool full UI round-trip and bounded public REST runtime are closed only for their tested fixtures, while untested Saver variants, 3.19.3 PModule round-trip, other runtime/HW cases, and physical acceptance stay explicit gates.
 - For consequential behavior distinguish VERIFIED CAPABILITY, KNOWN RECIPE, ACCEPTANCE-PENDING CONTRACT, TRUE GAP and INTENTIONALLY UNSUPPORTED. Read/schema evidence != runtime evidence != writer contract. When a writer contract is absent, provide design/manual guidance or the smallest bounded validation rather than inferring fields from another PEKAT version.
-- Before any version comparison, check retained do-not-repeat guidance, the 4.0.x family contract, existing forensic delta and relevant knowledge. Exact package/runtime/build facts remain patch-specific; common behavior does not need repeated patch-only rediscovery.
+- Before comparing versions, reuse existing version-specific evidence and documented open gaps. Do not repeat unchanged tests without a material reason.
+
+
+## Public capability and scenario routing — November 2026
+
+For user-facing examples, a concise inventory of **shipped offline tools**, exact-version limits, and the public roadmap, read [public-usage-and-roadmap.md](references/public-usage-and-roadmap.md). Prefer the existing offline scripts and references over new duplicate tooling. The separate PEKAT Assistant public edition offers the higher-level explanation and user scenarios. Keep its advisory status distinct from this skill's local offline scripts and from any separately developed, non-distributed controls. Explain public behavior and supported operation; do not surface proprietary implementation details in user-facing material.

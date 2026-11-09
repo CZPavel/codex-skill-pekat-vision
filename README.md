@@ -8,7 +8,7 @@ Public, version-aware Codex skill for PEKAT VISION 3.18.x, 3.19.x and 4.0.x, wit
 - Route exact `main(...)` signatures, Context, `result`/`exit`, Form runtime values and PEKAT 4 GlobalData.
 - Generate native-compatible PEKAT 4.0.x Form metadata from the shared 4.0.1/4.0.3 evidence family and route verified sequential `context["image"]` replacement with changed resolution.
 - Route the shared observed 4.0.x sequential versus true multi-branch custom Context and mutually exclusive Conditional Gates; retain exact GlobalData/geometry deltas where stated.
-- Safely analyze a PEKAT project/database directory or ZIP: restricted non-executing protocol-4 Pickle reader, recursive `modules.sort`/Parallelism, active/disabled/soft-deleted state, Filter/Gate rules, Code dependencies/side effects, and separate `database_old` migration diff.
+- Safely review a supplied PEKAT project folder or export without executing its Code: explain effective FLOW order, branches, module states, user-visible rules, code dependencies, and changes across versions.
 - Analyze `output.log` sessions, filtered incident families, affected identities, root candidates and cascade symptoms with sanitized evidence; inspect project metadata/runtime state without treating `running.db` as process liveness.
 - Inspect an exact-4.0.3 dataset/model project offline: image and tag inventory, model train/test provenance, bounded Detector annotation state, and small artifact metadata without loading model weights.
 - Inspect exact-4.0.3 family-specific training history and artifact metadata, and apply guarded curve interpretation without loading model weights or starting training.
@@ -75,4 +75,9 @@ Static/schema/AST tests are not described as PEKAT runtime or UI proof.
 
 ## Ecosystem maintenance — 2026-10-23
 
-Current capability selection and execution belong to `pekat-assistant`. Historical negative observations remain dated knowledge; later bounded support must be checked against current Assistant contracts. This maintenance adds no second router, writer, runtime test or hosted deployment.
+The [public PEKAT Assistant plugin](https://github.com/CZPavel/PEKAT-Assistant/tree/main/plugins/pekat-assistant) offers the general advisory route. This repository remains the canonical source of its standalone offline scripts and technical references. The public plugin does not include the separately developed private Assistant Core or grant live execution authority; check current exact-version Core contracts only if that Core is actually available.
+
+
+## November 2026 public usage guide
+
+The [public capability and usage guide](.github/skills/pekat-vision/references/public-usage-and-roadmap.md) maps practical user requests to the shipped reference material and offline scripts, explains their exact-version limits and records the next development directions. This skill is the standalone technical/offline route; the [PEKAT Assistant plugin](https://github.com/CZPavel/PEKAT-Assistant/tree/main/plugins/pekat-assistant) is the broader public advisory route. Neither installation includes the separately developed private Assistant Core or Windows application.
