@@ -106,3 +106,8 @@ not PEKAT Assistant Core execution authority.
 - Exact-version evidence and open gates are not mixed: 4.0.3 PTool full UI round-trip and bounded public REST runtime are closed only for their tested fixtures, while untested Saver variants, 3.19.3 PModule round-trip, other runtime/HW cases, and physical acceptance stay explicit gates.
 - For consequential behavior distinguish VERIFIED CAPABILITY, KNOWN RECIPE, ACCEPTANCE-PENDING CONTRACT, TRUE GAP and INTENTIONALLY UNSUPPORTED. Read/schema evidence != runtime evidence != writer contract. When a writer contract is absent, provide design/manual guidance or the smallest bounded validation rather than inferring fields from another PEKAT version.
 - Before any version comparison, check retained do-not-repeat guidance, the 4.0.x family contract, existing forensic delta and relevant knowledge. Exact package/runtime/build facts remain patch-specific; common behavior does not need repeated patch-only rediscovery.
+
+
+## Public capability and scenario routing — November 2026
+
+For user-facing examples, a concise inventory of **shipped offline tools**, exact-version limits, and the public roadmap, read [public-usage-and-roadmap.md](references/public-usage-and-roadmap.md). Prefer the existing offline scripts and references over new duplicate tooling. The separate PEKAT Assistant public edition offers the higher-level explanation and user scenarios. Keep its advisory status distinct from this skill's local offline scripts and from any separately developed, non-distributed controls. Explain public behavior and supported operation; do not surface proprietary implementation details in user-facing material.
