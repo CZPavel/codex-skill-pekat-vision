@@ -6,7 +6,7 @@ Updated 2026-11-09. This document describes what the **standalone public skill**
 
 This repository includes version-scoped knowledge, Code/Form/PTool guidance, reference material and executable **offline analysis scripts**. Its scripts operate on explicitly supplied local input, do not require an active PEKAT project and do not perform unapproved project or device actions.
 
-The separate [public PEKAT Assistant](https://github.com/CZPavel/PEKAT-Assistant) presents a more approachable knowledge/GPT interface and end-user scenarios. Both editions should share engineering conclusions; they should not independently invent conflicting capability claims.
+The separate [public PEKAT Assistant plugin](https://github.com/CZPavel/PEKAT-Assistant/tree/main/plugins/pekat-assistant) provides an advisory route and end-user scenarios. This repository remains the canonical source for its own offline scripts and technical references; consult the public Assistant capability guide for its public advisory scope.
 
 The separately developed Assistant Core includes more advanced bounded operations, but these **are not shipped by installing this public skill**.
 
@@ -70,7 +70,7 @@ Use the existing scripts instead of writing another parser or diagnostic utility
 1. **Public knowledge parity:** carry forward approved, version-scoped lessons from the canonical PEKAT Assistant project, with no customer data or proprietary implementation descriptions.
 2. **Better offline tools:** improve error handling, sample fixtures and readable diagnostics without replacing already working scripts.
 3. **Shared examples:** provide reproducible Code/PTool and inspection-design cases, including comparisons of native PEKAT operations and auxiliary code.
-4. **Optional public Assistant integration:** let the public Assistant reuse this skill's knowledge/offline tools rather than duplicating and diverging.
+4. **Public Assistant integration:** route advisory requests through the public plugin and reuse the separately installed standalone skill for its offline tools, without duplicating their source.
 5. **Future supported interfaces:** evaluate any officially available PEKAT integration interfaces for narrowly permissioned workflows; MCP may serve as a future adapter when available.
 
 These are directions, not published features or delivery commitments.
@@ -79,4 +79,4 @@ These are directions, not published features or delivery commitments.
 
 Use synthetic or permission-cleared examples. Strip customer names, addresses, host/device IDs, credentials, production configurations and personal data before sharing inputs or results. Present observable behavior and supported user operations; do not republish proprietary implementation material.
 
-See the [public PEKAT Assistant capability guide](https://github.com/CZPavel/PEKAT-Assistant/blob/main/docs/PUBLIC_CAPABILITY_GUIDE.md) once its corresponding documentation update is merged. Until then consult the guide in the companion review branch.
+See the [public PEKAT Assistant capability guide](https://github.com/CZPavel/PEKAT-Assistant/blob/main/docs/PUBLIC_CAPABILITY_GUIDE.md) for the companion public scope.

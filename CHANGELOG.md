@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased - 2026-11-09
+
+- Linked the public PEKAT Assistant plugin as an advisory route while retaining this repository as the canonical standalone offline tool and reference source.
+- Clarified that the public plugin does not ship the private Assistant Core or grant live execution authority; preserved exact-version scope and existing tools.
+
 ## Unreleased - 2026-10-23
 
 - Added general User-Guided FLOW Decomposition, native-first branching tradeoffs
